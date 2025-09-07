@@ -243,8 +243,14 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             trade_df['Units'] = trade_df['Units'].round(0)
             trade_df['Price'] = trade_df['Price'].round(2)
             trade_df['Value'] = trade_df['Value'].round(2)
+
+            trade_df = trade_df.sort_values(by="date", ascending=False)
+
+            # format date nicely
+            trade_df['date'] = trade_df['date'].dt.strftime('%Y-%m-%d')
             
             st.dataframe(trade_df, use_container_width=True)
+
             
             # Trade statistics
             st.subheader("📊 Trade Statistics")
