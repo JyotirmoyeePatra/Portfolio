@@ -247,7 +247,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             trade_df = trade_df.sort_values(by="Date", ascending=False)
 
             # format date nicely
-            trade_df['date'] = trade_df['date'].dt.strftime('%Y-%m-%d')
+            trade_df['Date'] = trade_df['Date'].dt.strftime('%Y-%m-%d')
             
             st.dataframe(trade_df, use_container_width=True)
 
