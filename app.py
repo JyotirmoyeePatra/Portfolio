@@ -244,7 +244,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             trade_df['Price'] = trade_df['Price'].round(2)
             trade_df['Value'] = trade_df['Value'].round(2)
 
-            trade_df = trade_df.sort_values(by="date", ascending=False)
+            trade_df = trade_df.sort_values(by="Date", ascending=False)
 
             # format date nicely
             trade_df['date'] = trade_df['date'].dt.strftime('%Y-%m-%d')
