@@ -1,309 +1,321 @@
+import streamlit as st
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from scipy.optimize import fsolve
 from datetime import datetime, timedelta
 import pyxirr
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import plotly.express as px
 
-# ----------------------------
-# Parameters
-#   "Nippon India Small Cap": "0P0000XVFY.BO",
-#    "Motilal Oswal Midcap": "0P0001BAYU.BO",
-#    "Quant Infrastructure": "0P0001BA3M.BO",
-#    "Parag Parikh Flexi Cap": "0P0000YWL0.BO"
-# ----------------------------
-ticker = "0P0001BAYU.BO"
-look_back_days=-365*1
-end_date = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d") # Changed to today + 1 day
-start_date = (datetime.now() + timedelta(days=look_back_days)).strftime("%Y-%m-%d" )
-initial_capital = 100000
-sell_pct = 0.05  # Sell only 5% of holdings
+# Set page config
+st.set_page_config(page_title="Portfolio Rebalancing Strategy", layout="wide")
 
-# ----------------------------
-# Fetch historical data
-# ----------------------------
-print(f"Downloading data for {ticker}...")
-data = yf.download(ticker, start=start_date, end=end_date)
-print(f"Downloaded {len(data)} days of data")
+# Title and description
+st.title("📈 Portfolio Rebalancing Strategy Analysis")
+st.markdown("""
+This app analyzes a momentum-based trading strategy using moving averages.
+Adjust the parameters below and click 'Run Analysis' to see the results.
+""")
 
-# ----------------------------
-# Calculate 50DMA and 200DMA
-# ----------------------------
-data['30DMA'] = data['Close'].rolling(window=30).mean()
-data['50DMA'] = data['Close'].rolling(window=50).mean()
-data['200DMA'] = data['Close'].rolling(window=200).mean()
+# Sidebar for parameters
+st.sidebar.header("Strategy Parameters")
 
-# Remove rows where moving averages are NaN
-data = data.dropna()
-print(f"Data after removing NaN values: {len(data)} days")
-
-# Convert to numpy arrays for easier scalar access
-dates = data.index.to_numpy()
-close_prices = data['Close'].values
-dma30_values = data['30DMA'].values
-dma50_values = data['50DMA'].values
-dma200_values = data['200DMA'].values
-
-# ----------------------------
-# Initialize Portfolio
-# ----------------------------
-portfolio = {
-    'cash': initial_capital,
-    'units': 0,
-    'last_buy_price': None,
-    'history': []
+# Predefined tickers
+ticker_options = {
+    "Nippon India Small Cap": "0P0000XVFY.BO",
+    "Motilal Oswal Midcap": "0P0001BAYU.BO",
+    "Parag Parikh Flexi Cap": "0P0000YWL0.BO"
 }
 
-# ----------------------------
-# Apply Trading Rules
-# ----------------------------
-print("Applying trading rules...")
-trade_count = 0
+# Allow custom ticker input
+use_custom = st.sidebar.checkbox("Use custom ticker")
+if use_custom:
+    ticker = st.sidebar.text_input("Enter ticker symbol", value="0P0001BAYU.BO")
+else:
+    selected_fund = st.sidebar.selectbox("Select Fund", list(ticker_options.keys()))
+    ticker = ticker_options[selected_fund]
 
-for i in range(len(dates)):
-    date = dates[i]
-    price = close_prices[i]
-    dma30 = dma30_values[i]
-    dma50 = dma50_values[i]
-    dma200 = dma200_values[i]
+# Date range
+st.sidebar.subheader("Date Range")
+look_back_years = st.sidebar.slider("Look back years", min_value=1, max_value=5, value=2)
+end_date_input = st.sidebar.date_input("End Date", value=datetime.now())
+
+# Trading parameters
+st.sidebar.subheader("Trading Parameters")
+initial_capital = st.sidebar.number_input("Initial Capital (₹)", min_value=10000, max_value=10000000, value=1200000, step=10000)
+sell_pct = st.sidebar.slider("Sell percentage (%)", min_value=1, max_value=20, value=5) / 100
+strong_buy_allocation = st.sidebar.slider("Strong Buy allocation (%)", min_value=1, max_value=20, value=10) / 100
+moderate_buy_allocation = st.sidebar.slider("Moderate Buy allocation (%)", min_value=1, max_value=10, value=2) / 100
+profit_threshold = st.sidebar.slider("Profit threshold for selling (%)", min_value=1, max_value=20, value=9)
+
+# Run analysis button
+if st.sidebar.button("🚀 Run Analysis", type="primary"):
     
-    # Convert numpy.datetime64 to pandas Timestamp for consistency
-    date = pd.Timestamp(date)
+    # Calculate dates
+    end_date = (end_date_input + timedelta(days=1)).strftime("%Y-%m-%d")
+    look_back_days = look_back_years*365 + 365
+    start_date = (end_date_input - timedelta(days=look_back_days)).strftime("%Y-%m-%d")
     
-    # Strong Buy: 200DMA > 50DMA > Price (strong downtrend, oversold)
-    if dma200 > dma50 > price and portfolio['cash'] > 0:
-        allocation = portfolio['cash'] * 0.10
-        units = allocation / price
-        if units > 0:
-            portfolio['units'] += units
-            portfolio['cash'] -= units * price
-            portfolio['last_buy_price'] = price
-            portfolio['history'].append((date, 'Buy', units, price, 'Strong'))
-            trade_count += 1
-            print(f"{date.strftime('%Y-%m-%d')}: Strong Buy - {units} units at ₹{price}")
+    # Progress bar
+    progress_bar = st.progress(0)
+    status_text = st.empty()
     
-    # Moderate Buy: 50DMA > 200DMA > Price (mild correction in uptrend)
-    elif dma50 > dma30 > price and portfolio['cash'] > 0:
-        allocation = portfolio['cash'] * 0.02
-        units = allocation / price
-        if units > 0:
-            portfolio['units'] += units
-            portfolio['cash'] -= units * price
-            portfolio['last_buy_price'] = price
-            portfolio['history'].append((date, 'Buy', units, price, 'Moderate'))
-            trade_count += 1
-            print(f"{date.strftime('%Y-%m-%d')}: Moderate Buy - {units} units at ₹{price}")
-    
-    # Sell 5% if price < 50DMA < 200DMA and 8% gain from last buy
-    elif (portfolio['units'] > 0 and 
-          portfolio['last_buy_price'] is not None and
-          price < dma50 < dma200):
-        
-        pct_change = (price - portfolio['last_buy_price']) / portfolio['last_buy_price'] * 100
-        
-        if pct_change >= 8:
-            units_to_sell = portfolio['units'] * sell_pct
-            portfolio['units'] -= units_to_sell
-            portfolio['cash'] += units_to_sell * price
-            portfolio['history'].append((date, 'Sell', units_to_sell, price, 'Profit_Taking'))
-            trade_count += 1
-            print(f"{date.strftime('%Y-%m-%d')}: Sell - {units_to_sell} units at ₹{price} ({pct_change}% gain)")
-
-print(f"Total trades executed: {trade_count}")
-
-# ----------------------------
-# Close all remaining positions
-# ----------------------------
-if portfolio['units'] > 0:
-    last_price = float(close_prices[-1])
-    final_units = float(portfolio['units'])
-    portfolio['cash'] += portfolio['units'] * last_price
-    portfolio['history'].append((pd.Timestamp(dates[-1]), 'Sell', portfolio['units'], last_price, 'Final_Exit'))
-    portfolio['units'] = 0
-    print(f"Final exit: Sold {final_units} units at ₹{last_price}")
-
-# ----------------------------
-# Prepare cash flows for XIRR
-# ----------------------------
-cash_flows = []
-cash_dates = []
-
-# Add initial investment as negative cash flow
-#cash_flows.append(-initial_capital)
-#cash_dates.append(pd.to_datetime(start_date))
-
-print(f"\nCash flows for XIRR calculation:")
-print(f"Initial investment: -₹{initial_capital} on {start_date}")
-
-# Add all buy/sell transactions
-for h in portfolio['history']:
-    date, action, units, price = h[:4]
-    if action == 'Buy':
-        cash_flow = -units * price  # Negative for outflows
-        cash_flows.append(cash_flow)
-        cash_dates.append(date)
-        print(f"{action}: -₹{abs(cash_flow)} on {date.strftime('%Y-%m-%d')}")
-    elif action == 'Sell':
-        cash_flow = units * price  # Positive for inflows
-        cash_flows.append(cash_flow)
-        cash_dates.append(date)
-        print(f"{action}: +₹{cash_flow} on {date.strftime('%Y-%m-%d')}")
-
-# Add final portfolio value as positive cash flow if no final exit recorded
-if len([h for h in portfolio['history'] if 'Final_Exit' in str(h)]) == 0:
-    cash_flows.append(portfolio['cash'])
-    cash_dates.append(pd.Timestamp(dates[-1]))
-
-# ----------------------------
-# XIRR calculation
-# ----------------------------
-def calculate_xirr(cash_flows, dates):
-    """
-    Calculate XIRR using pyxirr
-    """
-    print ( "DEBUG Calculate XIRR using pyxirr")
-    print ( cash_flows ) 
-    if len(cash_flows) < 2:
-        return 0
     try:
-        # pyxirr.xirr expects a list of dates and a list of cash flows
-        return pyxirr.xirr(dates, cash_flows)
+        # Fetch data
+        status_text.text("Downloading market data...")
+        progress_bar.progress(10)
+        
+        data = yf.download(ticker, start=start_date, end=end_date, progress=False)
+        
+        if data.empty:
+            st.error(f"No data found for ticker {ticker}")
+            st.stop()
+            
+        progress_bar.progress(30)
+        
+        # Calculate moving averages
+        status_text.text("Calculating moving averages...")
+        data['30DMA'] = data['Close'].rolling(window=30).mean()
+        data['50DMA'] = data['Close'].rolling(window=50).mean()
+        data['200DMA'] = data['Close'].rolling(window=200).mean()
+        
+        # Remove NaN values
+        data = data.dropna()
+        
+        if data.empty:
+            st.error("Insufficient data after calculating moving averages")
+            st.stop()
+            
+        progress_bar.progress(50)
+        
+        # Convert to arrays
+        dates = data.index.to_numpy()
+        close_prices = data['Close'].values
+        dma30_values = data['30DMA'].values
+        dma50_values = data['50DMA'].values
+        dma200_values = data['200DMA'].values
+        
+        # Initialize portfolio
+        portfolio = {
+            'cash': initial_capital,
+            'units': 0,
+            'last_buy_price': None,
+            'history': []
+        }
+        
+        # Apply trading rules
+        status_text.text("Applying trading strategy...")
+        progress_bar.progress(70)
+        
+        for i in range(len(dates)):
+            date = dates[i]
+            price = close_prices[i]
+            dma30 = dma30_values[i]
+            dma50 = dma50_values[i]
+            dma200 = dma200_values[i]
+            
+            date = pd.Timestamp(date)
+            
+            # Strong Buy: 200DMA > 50DMA > Price
+            if dma200 > dma50 > price and portfolio['cash'] > 0:
+                allocation = portfolio['cash'] * strong_buy_allocation
+                units = allocation / price
+                if units > 0:
+                    portfolio['units'] += units
+                    portfolio['cash'] -= units * price
+                    portfolio['last_buy_price'] = price
+                    portfolio['history'].append((date, 'Buy', units, price, 'Strong'))
+            
+            # Moderate Buy: 50DMA > 30DMA > Price
+            elif dma50 > dma30 > price and portfolio['cash'] > 0:
+                allocation = portfolio['cash'] * moderate_buy_allocation
+                units = allocation / price
+                if units > 0:
+                    portfolio['units'] += units
+                    portfolio['cash'] -= units * price
+                    portfolio['last_buy_price'] = price
+                    portfolio['history'].append((date, 'Buy', units, price, 'Moderate'))
+            
+            # Sell if conditions met
+            elif (portfolio['units'] > 0 and 
+                  portfolio['last_buy_price'] is not None and
+                  price > dma50 > dma200):
+                
+                pct_change = (price - portfolio['last_buy_price']) / portfolio['last_buy_price'] * 100
+                
+                if pct_change >= profit_threshold:
+                    units_to_sell = portfolio['units'] * sell_pct
+                    if units_to_sell >= 1 :
+                        portfolio['units'] -= units_to_sell
+                        portfolio['cash'] += units_to_sell * price
+                        portfolio['history'].append((date, 'Sell', units_to_sell, price, 'Profit_Taking'))
+        
+        # Close remaining positions
+        if portfolio['units'] > 0:
+            last_price = float(close_prices[-1])
+            portfolio['cash'] += portfolio['units'] * last_price
+            portfolio['history'].append((pd.Timestamp(dates[-1]), 'Sell', portfolio['units'], last_price, 'Final_Exit'))
+            portfolio['units'] = 0
+        
+        progress_bar.progress(90)
+        
+        # Calculate XIRR
+        status_text.text("Calculating returns...")
+        cash_flows = []
+        cash_dates = []
+        
+        for h in portfolio['history']:
+            date, action, units, price = h[:4]
+            if action == 'Buy':
+                cash_flow = -units * price
+                cash_flows.append(cash_flow)
+                cash_dates.append(date)
+            elif action == 'Sell':
+                cash_flow = units * price
+                cash_flows.append(cash_flow)
+                cash_dates.append(date)
+        
+        # Calculate XIRR
+        xirr_value = 0
+        if len(cash_flows) >= 2:
+            try:
+                xirr_value = pyxirr.xirr(cash_dates, cash_flows)
+            except:
+                xirr_value = 0
+        
+        progress_bar.progress(100)
+        status_text.text("Analysis complete!")
+        
+        # Display results
+        st.success("✅ Analysis completed successfully!")
+        
+        # Key metrics
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            total_return = portfolio['cash'] - initial_capital
+            return_pct = (portfolio['cash'] / initial_capital - 1) * 100
+            st.metric("Total Return", f"₹{total_return[0]:.2f}", f"{return_pct}%")
+        
+        with col2:
+            xirr_value_rounded = (xirr_value * 100)
+            st.metric("XIRR (Annualized)", f"{round(xirr_value_rounded,2)}%")
+        
+        with col3:
+            st.metric("Total Trades", len(portfolio['history']))
+        
+        with col4:
+            st.metric("Final Value", f"₹{portfolio['cash'][0]:.2f}")
+        
+        # Buy and Hold comparison
+        initial_price = close_prices[0]
+        final_price = close_prices[-1]
+        buy_hold_return = (final_price / initial_price - 1) * 100
+        total_days = (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days
+        total_years = total_days / 365.25
+        buy_hold_annualized = ((final_price / initial_price) ** (1/total_years) - 1) * 100
+        
+        st.subheader("📊 Strategy vs Buy & Hold")
+        comp_col1, comp_col2, comp_col3 = st.columns(3)
+        
+        with comp_col1:
+            st.metric("Buy & Hold Return", f"{buy_hold_return[0]:.2f}%")
+        
+        with comp_col2:
+            st.metric("Buy & Hold Annualized", f"{buy_hold_annualized[0]:.2f}%")
+        
+        with comp_col3:
+            outperformance = xirr_value * 100 - buy_hold_annualized
+            st.metric("Strategy Outperformance", f"{outperformance[0]:.2f}%")
+        
+        
+        # Trade history
+        if portfolio['history']:
+            st.subheader("📋 Trade History")
+            
+            trade_df = pd.DataFrame(portfolio['history'], 
+                                  columns=['Date', 'Action', 'Units', 'Price', 'Type'])
+            # Convert numpy values to float for proper formatting
+            trade_df['Units'] = trade_df['Units'].astype(float)
+            trade_df['Price'] = trade_df['Price'].astype(float)
+            trade_df['Value'] = trade_df['Units'] * trade_df['Price']
+            trade_df['Units'] = trade_df['Units'].round(0)
+            trade_df['Price'] = trade_df['Price'].round(2)
+            trade_df['Value'] = trade_df['Value'].round(2)
+            
+            st.dataframe(trade_df, use_container_width=True)
+            
+            # Trade statistics
+            st.subheader("📊 Trade Statistics")
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                buy_trades = trade_df[trade_df['Action'] == 'Buy']
+                sell_trades = trade_df[trade_df['Action'] == 'Sell']
+                
+                st.write(f"**Total Buy Trades:** {len(buy_trades)}")
+                st.write(f"**Total Sell Trades:** {len(sell_trades)}")
+                
+                if len(buy_trades) > 0:
+                    strong_buys = len(buy_trades[buy_trades['Type'] == 'Strong'])
+                    moderate_buys = len(buy_trades[buy_trades['Type'] == 'Moderate'])
+                    st.write(f"**Strong Buys:** {strong_buys}")
+                    st.write(f"**Moderate Buys:** {moderate_buys}")
+            
+            with col2:
+                if len(buy_trades) > 0:
+                    total_invested = buy_trades['Value'].sum()
+                    st.write(f"**Total Invested:** ₹{total_invested:,.2f}")
+                
+                if len(sell_trades) > 0:
+                    total_received = sell_trades['Value'].sum()
+                    st.write(f"**Total Received:** ₹{total_received:,.2f}")
+                    
+                    if len(buy_trades) > 0:
+                        net_profit = total_received - total_invested
+                        st.write(f"**Net Profit/Loss:** ₹{net_profit:,.2f}")
+    
     except Exception as e:
-        print(f"Error calculating XIRR: {e}")
-        return 0
-
-# Calculate XIRR
-try:
-    xirr_value = calculate_xirr(cash_flows, cash_dates)
-except ValueError:
-    print("XIRR calculation failed. Check cash flow values.")
-    xirr_value = 0 # Fallback to 0 or another suitable value
-
-
-# ----------------------------
-# Results Summary
-# ----------------------------
-print(f"\n{'='*50}")
-print("PORTFOLIO PERFORMANCE SUMMARY")
-print(f"{'='*50}")
-print(f"Initial Capital: ₹{initial_capital}")
-print(f"Final Cash: ₹{portfolio['cash']}")
-print(f"Total Return: ₹{portfolio['cash'] - initial_capital}")
-print(f"Absolute Return: {(portfolio['cash'] / initial_capital - 1) * 100}%")
-print(f"XIRR (Annualized): {xirr_value * 100}%")
-
-# Calculate period details
-start_dt = pd.to_datetime(start_date)
-end_dt = pd.to_datetime(end_date)
-total_days = (end_dt - start_dt).days
-total_years = total_days / 365.25
-
-print(f"Investment Period: {total_days} days ({total_years} years)")
-print(f"Total Trades: {len(portfolio['history'])}")
-
-# Calculate buy and hold return for comparison
-if len(close_prices) > 0:
-    initial_price = close_prices[0]
-    final_price = close_prices[-1]
-    buy_hold_return = (final_price / initial_price - 1) * 100
-    buy_hold_annualized = ((final_price / initial_price) ** (1/total_years) - 1) * 100
+        st.error(f"An error occurred: {str(e)}")
+        st.write("Please check your ticker symbol and try again.")
     
-    print(f"\nBuy & Hold Return: {buy_hold_return}%")
-    print(f"Buy & Hold Annualized: {buy_hold_annualized}%")
-    print(f"Strategy vs Buy & Hold: {xirr_value * 100 - buy_hold_annualized}% difference")
+    finally:
+        progress_bar.empty()
+        status_text.empty()
 
-# ----------------------------
-# Trade Analysis
-# ----------------------------
-print(f"\n{'='*50}")
-print("TRADE ANALYSIS")
-print(f"{'='*50}")
-
-buy_trades = [h for h in portfolio['history'] if h[1] == 'Buy']
-sell_trades = [h for h in portfolio['history'] if h[1] == 'Sell']
-
-print(f"Buy Trades: {len(buy_trades)}")
-print(f"Sell Trades: {len(sell_trades)}")
-
-if buy_trades:
-    strong_buys = [h for h in buy_trades if len(h) > 4 and h[4] == 'Strong']
-    moderate_buys = [h for h in buy_trades if len(h) > 4 and h[4] == 'Moderate']
-    print(f"  - Strong Buys: {len(strong_buys)}")
-    print(f"  - Moderate Buys: {len(moderate_buys)}")
-
-print(f"\nFinal Holdings: {portfolio['units']} units")
-print(f"Final Cash: ₹{portfolio['cash']}")
-
-# Show recent trades
-if portfolio['history']:
-    print(f"\nRecent Trades:")
-    for h in portfolio['history'][-5:]:  # Show last 5 trades
-        date, action, units, price = h[:4]
-        trade_type = h[4] if len(h) > 4 else "N/A"
-        units_val = float(units) if hasattr(units, '__iter__') and not isinstance(units, str) else units
-        price_val = float(price) if hasattr(price, '__iter__') and not isinstance(price, str) else price
-        print(f"  {date.strftime('%Y-%m-%d')}: {action} {units_val} units at ₹{price_val} ({trade_type})")
-
-# ----------------------------
-# Additional Statistics
-# ----------------------------
-print(f"\n{'='*50}")
-print("ADDITIONAL STATISTICS")
-print(f"{'='*50}")
-
-if len(cash_flows) > 1:
-    total_invested = sum(abs(cf) for cf in cash_flows if cf < 0)
-    total_returned = sum(cf for cf in cash_flows if cf > 0)
-    print(f"Total Invested: ₹{total_invested}")
-    print(f"Total Returned: ₹{total_returned}")
-    print(f"Net Cash Flow: ₹{total_returned - total_invested}")
-
-# Price statistics
-print(f"\nPrice Statistics:")
-print(f"Starting Price: ₹{close_prices[0]}")
-print(f"Ending Price: ₹{close_prices[-1]}")
-print(f"Price Change: {((close_prices[-1] / close_prices[0]) - 1) * 100}%")
-print(f"Max Price: ₹{max(close_prices)}")
-print(f"Min Price: ₹{min(close_prices)}")
-
-def calculate_backtest(data, initial_capital, sell_pct, interest_rate):
-    """
-    Performs a stock backtest and returns portfolio details.
-    """
+else:
+    st.info("👈 Configure your parameters in the sidebar and click 'Run Analysis' to start")
     
-    # Calculate DMAs (ensure this matches the logic in your app)
-    data['30DMA'] = data['Close'].rolling(window=30).mean()
-    data['50DMA'] = data['Close'].rolling(window=50).mean()
-    data['200DMA'] = data['Close'].rolling(window=200).mean()
+    # Show strategy explanation
+    st.subheader("🎯 Strategy Overview")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        **Buy Signals:**
+        - **Strong Buy**: When 200DMA > 50DMA > Price (strong downtrend, oversold)
+        - **Moderate Buy**: When 50DMA > 30DMA > Price (mild correction in uptrend)
+        """)
+    
+    with col2:
+        st.markdown("""
+        **Sell Signals:**
+        - Sell when Price < 50DMA < 200DMA and profit ≥ threshold
+        - Partial selling (configurable percentage)
+        - Final exit at end of period
+        """)
+    
+    st.markdown("""
+    **Key Features:**
+    - Moving average-based momentum strategy
+    - Risk management through partial selling
+    - Configurable allocation percentages
+    - XIRR calculation for annualized returns
+    - Comparison with buy-and-hold strategy
+    """)
 
-    # Backtesting Logic (Keep your original logic from here)
-    data['buy_signal'] = (data['30DMA'] > data['50DMA']) & (data['50DMA'] > data['200DMA'])
-    data['sell_signal'] = (data['30DMA'] < data['50DMA']) | (data['50DMA'] < data['200DMA'])
-
-    # Initialize portfolio
-    portfolio = {
-        'cash': initial_capital,
-        'units': 0,
-        'history': []
-    }
-    cash_flows = [initial_capital]
-
-    # ... (Your original backtesting loop)
-
-    # Return the portfolio and cash flows
-    return portfolio, cash_flows
-
-# Example of how to use this function locally
-if __name__ == "__main__":
-    ticker = "0P0001BAYU.BO"
-    start_date = "2024-01-01"
-    end_date = "2025-01-01"
-    initial_capital = 100000
-    sell_pct = 0.05
-    interest_rate = 0.08
-
-    data = yf.download(ticker, start=start_date, end=end_date)
-    if not data.empty:
-        portfolio, cash_flows = calculate_backtest(data, initial_capital, sell_pct, interest_rate)
-        print("Backtest finished.")
-        # ... (Your original print statements)
+# Footer
+st.markdown("---")
+st.markdown("*Built with Streamlit • Data from Yahoo Finance*")
