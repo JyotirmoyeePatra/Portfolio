@@ -45,7 +45,8 @@ ticker_options = {
       "Neuland Labs": "NEULANDLAB.NS",
       "Narayana Hrudayalaya": "NH.NS",
       "Nifty BeES": "NIFTYBEES.NS",
-      "Zen Technologies": "ZENTEC.NS"
+      "Zen Technologies": "ZENTEC.NS",
+       "Gravita": "GRAVITA.NS"
 }
 
 # Allow custom ticker input
