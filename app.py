@@ -25,7 +25,27 @@ st.sidebar.header("Strategy Parameters")
 ticker_options = {
     "Nippon India Small Cap": "0P0000XVFY.BO",
     "Motilal Oswal Midcap": "0P0001BAYU.BO",
-    "Parag Parikh Flexi Cap": "0P0000YWL0.BO"
+    "Parag Parikh Flexi Cap": "0P0000YWL0.BO",
+      "Abbott India": "ABBOTINDIA.NS",
+      "Ashok Leyland": "ASHOKLEY.NS",
+      "Bajaj Finance": "BAJFINANCE.NS",
+      "Bharat Electronics": "BEL.NS",
+      "Cholamandalam Finance": "CHOLAFIN.NS",
+      "Data Patterns": "DATAPATTNS.NS",
+      "Deepak Fertilisers": "DEEPAKFERT.NS",
+      "Eicher Motors": "EICHERMOT.NS",
+      "Godrej Industries": "GODREJIND.NS",
+      "Hindustan Aeronautics": "HAL.NS",
+      "HDFC Bank": "HDFCBANK.NS",
+      "Kirloskar Engines": "KIRLOSENG.NS",
+      "Larsen & Toubro": "LT.NS",
+      "Max Healthcare": "MAXHEALTH.NS",
+      "MCX India": "MCX.NS",
+      "NBCC": "NBCC.NS",
+      "Neuland Labs": "NEULANDLAB.NS",
+      "Narayana Hrudayalaya": "NH.NS",
+      "Nifty BeES": "NIFTYBEES.NS",
+      "Zen Technologies": "ZENTEC.NS"
 }
 
 # Allow custom ticker input
