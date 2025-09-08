@@ -232,23 +232,42 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         # Buy and Hold comparison
         initial_price = close_prices[0]
         final_price = close_prices[-1]
-        buy_hold_return = (final_price / initial_price - 1) * 100
-        total_days = (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days
-        total_years = total_days / 365.25
-        buy_hold_annualized = ((final_price / initial_price) ** (1/total_years) - 1) * 100
         
-        st.subheader("📊 Strategy vs Buy & Hold")
+        # --- Replace this chunk ---
+        # buy_hold_return = (final_price / initial_price - 1) * 100
+        # total_days = (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days
+        # total_years = total_days / 365.25
+        # buy_hold_annualized = ((final_price / initial_price) ** (1/total_years) - 1) * 100
+        
+        #  Buy & Hold via XIRR ---
+        bh_cash_flows = [
+            -initial_capital,
+            portfolio['cash'][0]
+        ]
+        bh_dates = [
+            pd.to_datetime(dates[0]),
+            pd.to_datetime(dates[-1])
+        ]
+        try:
+            bh_xirr = pyxirr.xirr(bh_dates, bh_cash_flows)
+        except Exception:
+            bh_xirr = 0
+        bh_xirr_pct = bh_xirr * 100
+
+        #  End replacement ---
+                
+        st.subheader(" Strategy vs Buy & Hold")
         comp_col1, comp_col2, comp_col3 = st.columns(3)
-        
         with comp_col1:
-            st.metric("Buy & Hold Return", f"{buy_hold_return[0]:.2f}%")
-        
+            # Optionally still show simple total return
+            simple_bh_return = (final_price / initial_price - 1) * 100
+            st.metric("Buy & Hold Return", f"{simple_bh_return[0]:.2f}%")
         with comp_col2:
-            st.metric("Buy & Hold Annualized", f"{buy_hold_annualized[0]:.2f}%")
-        
+            st.metric("Buy & Hold XIRR (Annualized)", f"{bh_xirr_pct:.2f}%")
         with comp_col3:
-            outperformance = xirr_value * 100 - buy_hold_annualized
-            st.metric("Strategy Outperformance", f"{outperformance[0]:.2f}%")
+            strat_xirr_pct = xirr_value * 100
+            outperformance = strat_xirr_pct - bh_xirr_pct
+            st.metric("Strategy Outperformance", f"{outperformance:.2f}%")
         
         
         # Trade history
