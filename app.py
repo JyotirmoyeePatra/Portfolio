@@ -191,7 +191,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         cash_dates = []
         
         for h in trade_history_with_cash:
-            date, action, units, price = h[:4]
+            date, action, type, units, price = h[:5]
             if action == 'Buy':
                 cash_flow = -units * price
                 cash_flows.append(cash_flow)
