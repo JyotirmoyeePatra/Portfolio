@@ -150,7 +150,9 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     portfolio['cash'] -= units * price
                     portfolio['last_buy_price'] = price
                     #['Date', 'Action', 'Type', 'Units', 'Price', 'Cash Position']
-                    cash_pos = f"{portfolio['cash'].round(0)} ( { (portfolio['cash']/initial_capital).round(0)} %ge )"
+                    cash_rounded = portfolio['cash'].round(0)
+                    cash_pct = (portfolio['cash']/initial_capital).round(0)
+                    cash_pos = f"{cash_rounded} ( {cash_pct} %ge )"
                     trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
             
             # Moderate Buy: 50DMA > 30DMA > Price
@@ -161,7 +163,9 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     portfolio['units'] += units
                     portfolio['cash'] -= units * price
                     portfolio['last_buy_price'] = price
-                    cash_pos = f"{portfolio['cash'].round(0)} ( { (portfolio['cash']/initial_capital).round(0)} %ge )"
+                    cash_rounded = portfolio['cash'].round(0)
+                    cash_pct = (portfolio['cash']/initial_capital).round(0)
+                    cash_pos = f"{cash_rounded} ( {cash_pct} %ge )"
                     trade_history_with_cash.append((date, 'Buy', 'Moderate', units, price, cash_pos ))
             
             # Sell if conditions met
@@ -176,14 +180,18 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     if units_to_sell >= 1 :
                         portfolio['units'] -= units_to_sell
                         portfolio['cash'] += units_to_sell * price
-                        cash_pos = f"{portfolio['cash'].round(0)} ( { (portfolio['cash']/initial_capital).round(0)} %ge )"
+                        cash_rounded = portfolio['cash'].round(0)
+                        cash_pct = (portfolio['cash']/initial_capital).round(0)
+                        cash_pos = f"{cash_rounded} ( {cash_pct} %ge )"
                         trade_history_with_cash.append((date, 'Sell', 'Profit_Taking', units_to_sell, price, cash_pos ))
         
         # Close remaining positions
         if portfolio['units'] > 0:
             last_price = float(close_prices[-1])
             portfolio['cash'] += portfolio['units'] * last_price
-            cash_pos = f"{portfolio['cash'].round(0)} ( { (portfolio['cash']/initial_capital).round(0)} %ge )"
+            cash_rounded = portfolio['cash'].round(0)
+            cash_pct = (portfolio['cash']/initial_capital).round(0)
+            cash_pos = f"{cash_rounded} ( {cash_pct} %ge )"
             trade_history_with_cash.append((pd.Timestamp(dates[-1]), 'Sell',  'Final_Exit', portfolio['units'], last_price, cash_pos ))
             portfolio['units'] = 0
         
