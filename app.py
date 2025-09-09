@@ -276,10 +276,9 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         # Trade history
         if trade_history_with_cash:
             st.subheader("📋 Trade History")
-            
             trade_df = pd.DataFrame(trade_history_with_cash, 
-                                  columns=['Date', 'Action', 'Units', 'Price', 'Type', 'Cash Position'])
-            
+                                  columns=['Date', 'Action', 'Type', 'Units', 'Price', 'Cash Position'])
+
             # Convert numpy values to float for proper formatting
             trade_df['Units'] = trade_df['Units'].astype(float)
             trade_df['Price'] = trade_df['Price'].astype(float)
