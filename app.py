@@ -151,7 +151,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     portfolio['last_buy_price'] = price
                     #['Date', 'Action', 'Type', 'Units', 'Price', 'Cash Position']
                     cash_pos = f"{portfolio['cash'].round(0)} ( { (portfolio['cash']/initial_capital).round(0)} % )"
-                    trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  portfolio['cash'].round(0) ))
+                    trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
             
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
