@@ -296,13 +296,11 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             trade_df['Units'] = trade_df['Units'].astype(float)
             trade_df['Price'] = trade_df['Price'].astype(float)
             trade_df['Value'] = trade_df['Units'] * trade_df['Price']
-            trade_df['Cash Position'] = trade_df['Cash Position'].astype(float)
             
             # Round values for display
             trade_df['Units'] = trade_df['Units'].round(0)
             trade_df['Price'] = trade_df['Price'].round(1)
             trade_df['Value'] = trade_df['Value'].round(0)
-            trade_df['Cash Position'] = trade_df['Cash Position'].round(0)
             
             trade_df = trade_df.sort_values(by="Date", ascending=False)
 
