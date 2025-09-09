@@ -110,13 +110,6 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             
         progress_bar.progress(50)
         
-        # Convert to arrays
-        dates = data.index.to_numpy()
-        close_prices = data['Close'].values
-        dma30_values = data['30DMA'].values
-        dma50_values = data['50DMA'].values
-        dma200_values = data['200DMA'].values
-        
         # Initialize portfolio
         portfolio = {
             'cash': initial_capital,
@@ -128,6 +121,16 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         # Apply trading rules
         status_text.text("Applying trading strategy...")
         progress_bar.progress(70)
+        
+        # Lists to store history data with cash position
+        trade_history_with_cash = []
+        
+        # Convert to arrays
+        dates = data.index.to_numpy()
+        close_prices = data['Close'].values
+        dma30_values = data['30DMA'].values
+        dma50_values = data['50DMA'].values
+        dma200_values = data['200DMA'].values
         
         for i in range(len(dates)):
             date = dates[i]
@@ -146,7 +149,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     portfolio['units'] += units
                     portfolio['cash'] -= units * price
                     portfolio['last_buy_price'] = price
-                    portfolio['history'].append((date, 'Buy', units, price, 'Strong'))
+                    trade_history_with_cash.append((date, 'Buy', units, price, 'Strong', portfolio['cash']))
             
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
@@ -156,7 +159,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     portfolio['units'] += units
                     portfolio['cash'] -= units * price
                     portfolio['last_buy_price'] = price
-                    portfolio['history'].append((date, 'Buy', units, price, 'Moderate'))
+                    trade_history_with_cash.append((date, 'Buy', units, price, 'Moderate', portfolio['cash']))
             
             # Sell if conditions met
             elif (portfolio['units'] > 0 and 
@@ -170,13 +173,13 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     if units_to_sell >= 1 :
                         portfolio['units'] -= units_to_sell
                         portfolio['cash'] += units_to_sell * price
-                        portfolio['history'].append((date, 'Sell', units_to_sell, price, 'Profit_Taking'))
+                        trade_history_with_cash.append((date, 'Sell', units_to_sell, price, 'Profit_Taking', portfolio['cash']))
         
         # Close remaining positions
         if portfolio['units'] > 0:
             last_price = float(close_prices[-1])
             portfolio['cash'] += portfolio['units'] * last_price
-            portfolio['history'].append((pd.Timestamp(dates[-1]), 'Sell', portfolio['units'], last_price, 'Final_Exit'))
+            trade_history_with_cash.append((pd.Timestamp(dates[-1]), 'Sell', portfolio['units'], last_price, 'Final_Exit', portfolio['cash']))
             portfolio['units'] = 0
         
         progress_bar.progress(90)
@@ -186,7 +189,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         cash_flows = []
         cash_dates = []
         
-        for h in portfolio['history']:
+        for h in trade_history_with_cash:
             date, action, units, price = h[:4]
             if action == 'Buy':
                 cash_flow = -units * price
@@ -224,7 +227,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             st.metric("XIRR (Annualized)", f"{round(xirr_value_rounded,2)}%")
         
         with col3:
-            st.metric("Total Trades", len(portfolio['history']))
+            st.metric("Total Trades", len(trade_history_with_cash))
         
         with col4:
             st.metric("Final Value", f"₹{portfolio['cash'][0]:.2f}")
@@ -271,19 +274,24 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         
         
         # Trade history
-        if portfolio['history']:
+        if trade_history_with_cash:
             st.subheader("📋 Trade History")
             
-            trade_df = pd.DataFrame(portfolio['history'], 
-                                  columns=['Date', 'Action', 'Units', 'Price', 'Type'])
+            trade_df = pd.DataFrame(trade_history_with_cash, 
+                                  columns=['Date', 'Action', 'Units', 'Price', 'Type', 'Cash Position'])
+            
             # Convert numpy values to float for proper formatting
             trade_df['Units'] = trade_df['Units'].astype(float)
             trade_df['Price'] = trade_df['Price'].astype(float)
             trade_df['Value'] = trade_df['Units'] * trade_df['Price']
-            trade_df['Units'] = trade_df['Units'].round(0)
+            trade_df['Cash Position'] = trade_df['Cash Position'].astype(float)
+            
+            # Round values for display
+            trade_df['Units'] = trade_df['Units'].round(2)
             trade_df['Price'] = trade_df['Price'].round(2)
             trade_df['Value'] = trade_df['Value'].round(2)
-
+            trade_df['Cash Position'] = trade_df['Cash Position'].round(2)
+            
             trade_df = trade_df.sort_values(by="Date", ascending=False)
 
             # format date nicely
