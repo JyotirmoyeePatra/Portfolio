@@ -149,7 +149,8 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     portfolio['units'] += units
                     portfolio['cash'] -= units * price
                     portfolio['last_buy_price'] = price
-                    trade_history_with_cash.append((date, 'Buy', units, price, 'Strong', portfolio['cash'].round(0) ))
+                    #['Date', 'Action', 'Type', 'Units', 'Price', 'Cash Position']
+                    trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  portfolio['cash'].round(0) ))
             
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
@@ -159,7 +160,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     portfolio['units'] += units
                     portfolio['cash'] -= units * price
                     portfolio['last_buy_price'] = price
-                    trade_history_with_cash.append((date, 'Buy', units, price, 'Moderate', portfolio['cash'].round(0) ))
+                    trade_history_with_cash.append((date, 'Buy', 'Moderate', units, price, portfolio['cash'].round(0) ))
             
             # Sell if conditions met
             elif (portfolio['units'] > 0 and 
@@ -173,13 +174,13 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     if units_to_sell >= 1 :
                         portfolio['units'] -= units_to_sell
                         portfolio['cash'] += units_to_sell * price
-                        trade_history_with_cash.append((date, 'Sell', units_to_sell, price, 'Profit_Taking', portfolio['cash'].round(0) ))
+                        trade_history_with_cash.append((date, 'Sell', 'Profit_Taking', units_to_sell, price, portfolio['cash'].round(0) ))
         
         # Close remaining positions
         if portfolio['units'] > 0:
             last_price = float(close_prices[-1])
             portfolio['cash'] += portfolio['units'] * last_price
-            trade_history_with_cash.append((pd.Timestamp(dates[-1]), 'Sell', portfolio['units'], last_price, 'Final_Exit', portfolio['cash'].round(0) ))
+            trade_history_with_cash.append((pd.Timestamp(dates[-1]), 'Sell',  'Final_Exit', portfolio['units'], last_price, portfolio['cash'].round(0) ))
             portfolio['units'] = 0
         
         progress_bar.progress(90)
