@@ -59,7 +59,7 @@ else:
 
 # Date range
 st.sidebar.subheader("Date Range")
-look_back_years = st.sidebar.slider("Look back years", min_value=1, max_value=10, value=2)
+look_back_years = st.sidebar.slider("Look back years", min_value=1, max_value=20, value=2)
 end_date_input = st.sidebar.date_input("End Date", value=datetime.now())
 
 # Trading parameters
