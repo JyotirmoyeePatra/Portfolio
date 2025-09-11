@@ -86,8 +86,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
     
     # Calculate dates
     end_date = (end_date_input + timedelta(days=1)).strftime("%Y-%m-%d")
-    look_back_days = look_back_years*365 + 365
-    start_date = (end_date_input - timedelta(days=look_back_days)).strftime("%Y-%m-%d")
+    start_date = (start_date_input - timedelta(days=365)).strftime("%Y-%m-%d") # For calculation of 180 days back..
     
     # Progress bar
     progress_bar = st.progress(0)
