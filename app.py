@@ -23,10 +23,10 @@ st.sidebar.header("Strategy Parameters")
 
 # Predefined tickers
 ticker_options = {
-    "Nippon India Small Cap": {"symbol": "0P0000XVFY.BO", "allocation": 0},
+    "Nippon India Small Cap": {"symbol": "0P0000XVFY.BO", "allocation": 1},
     "Motilal Oswal Midcap": {"symbol": "0P0001BAYU.BO", "allocation": 0},
     "Parag Parikh Flexi Cap": {"symbol": "0P0000YWL0.BO", "allocation": 0},
-    "Abbott India": {"symbol": "ABBOTINDIA.NS", "allocation": 0},
+    "Abbott India": {"symbol": "ABBOTINDIA.NS", "allocation": 1},
     "Ashok Leyland": {"symbol": "ASHOKLEY.NS", "allocation": 0},
     "Bajaj Finance": {"symbol": "BAJFINANCE.NS", "allocation": 0},
     "Bharat Electronics": {"symbol": "BEL.NS", "allocation": 0},
