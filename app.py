@@ -23,30 +23,30 @@ st.sidebar.header("Strategy Parameters")
 
 # Predefined tickers
 ticker_options = {
-    "Nippon India Small Cap": {"symbol": "0P0000XVFY.BO", "allocation": 1},
-    "Motilal Oswal Midcap": {"symbol": "0P0001BAYU.BO", "allocation": 0},
-    "Parag Parikh Flexi Cap": {"symbol": "0P0000YWL0.BO", "allocation": 0},
-    "Abbott India": {"symbol": "ABBOTINDIA.NS", "allocation": 1},
-    "Ashok Leyland": {"symbol": "ASHOKLEY.NS", "allocation": 0},
-    "Bajaj Finance": {"symbol": "BAJFINANCE.NS", "allocation": 0},
-    "Bharat Electronics": {"symbol": "BEL.NS", "allocation": 0},
-    "Cholamandalam Finance": {"symbol": "CHOLAFIN.NS", "allocation": 0},
-    "Data Patterns": {"symbol": "DATAPATTNS.NS", "allocation": 0},
-    "Deepak Fertilisers": {"symbol": "DEEPAKFERT.NS", "allocation": 0},
-    "Eicher Motors": {"symbol": "EICHERMOT.NS", "allocation": 0},
-    "Godrej Industries": {"symbol": "GODREJIND.NS", "allocation": 0},
-    "Hindustan Aeronautics": {"symbol": "HAL.NS", "allocation": 0},
-    "HDFC Bank": {"symbol": "HDFCBANK.NS", "allocation": 0},
-    "Kirloskar Engines": {"symbol": "KIRLOSENG.NS", "allocation": 0},
-    "Larsen & Toubro": {"symbol": "LT.NS", "allocation": 0},
-    "Max Healthcare": {"symbol": "MAXHEALTH.NS", "allocation": 0},
-    "MCX India": {"symbol": "MCX.NS", "allocation": 0},
-    "NBCC": {"symbol": "NBCC.NS", "allocation": 0},
-    "Neuland Labs": {"symbol": "NEULANDLAB.NS", "allocation": 0},
-    "Narayana Hrudayalaya": {"symbol": "NH.NS", "allocation": 0},
-    "Nifty BeES": {"symbol": "NIFTYBEES.NS", "allocation": 0},
-    "Zen Technologies": {"symbol": "ZENTEC.NS", "allocation": 0},
-    "Gravita": {"symbol": "GRAVITA.NS", "allocation": 0}
+    "Nippon India Small Cap": {"symbol": "0P0000XVFY.BO", "percent": 1},
+    "Motilal Oswal Midcap": {"symbol": "0P0001BAYU.BO", "percent": 1},
+    "Parag Parikh Flexi Cap": {"symbol": "0P0000YWL0.BO", "percent": 1},
+    "Abbott India": {"symbol": "ABBOTINDIA.NS", "percent": 1},
+    "Ashok Leyland": {"symbol": "ASHOKLEY.NS", "percent": 1},
+    "Bajaj Finance": {"symbol": "BAJFINANCE.NS", "percent": 1},
+    "Bharat Electronics": {"symbol": "BEL.NS", "percent": 1},
+    "Cholamandalam Finance": {"symbol": "CHOLAFIN.NS", "percent": 1},
+    "Data Patterns": {"symbol": "DATAPATTNS.NS", "percent": 1},
+    "Deepak Fertilisers": {"symbol": "DEEPAKFERT.NS", "percent": 1},
+    "Eicher Motors": {"symbol": "EICHERMOT.NS", "percent": 1},
+    "Godrej Industries": {"symbol": "GODREJIND.NS", "percent": 1},
+    "Hindustan Aeronautics": {"symbol": "HAL.NS", "percent": 1},
+    "HDFC Bank": {"symbol": "HDFCBANK.NS", "percent": 1},
+    "Kirloskar Engines": {"symbol": "KIRLOSENG.NS", "percent": 1},
+    "Larsen & Toubro": {"symbol": "LT.NS", "percent": 1},
+    "Max Healthcare": {"symbol": "MAXHEALTH.NS", "percent": 1},
+    "MCX India": {"symbol": "MCX.NS", "percent": 1},
+    "NBCC": {"symbol": "NBCC.NS", "percent": 1},
+    "Neuland Labs": {"symbol": "NEULANDLAB.NS", "percent": 1},
+    "Narayana Hrudayalaya": {"symbol": "NH.NS", "percent": 1},
+    "Nifty BeES": {"symbol": "NIFTYBEES.NS", "percent": 1},
+    "Zen Technologies": {"symbol": "ZENTEC.NS", "percent": 1},
+    "Gravita": {"symbol": "GRAVITA.NS", "percent": 1}
 }
 
 # Allow custom ticker input
@@ -121,7 +121,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         progress_bar.progress(50)
         
         # Initialize portfolio
-        initial_capital = total_capital * ticker_options[selected_fund]["allocation"]
+        initial_capital = round(total_capital * ticker_options[selected_fund]["percent"] / 100)
         portfolio = {
             'cash': initial_capital,
             'units': 0,
@@ -296,8 +296,8 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             outperformance = strat_xirr_pct - bh_xirr_pct
             st.metric("Strategy Outperformance", f"{outperformance:.2f}%")
 
-        st.subheader("📋 Ticker Details")
-        st.write(f"**Symbol:** {selected_fund} with initial amount {initial_capital}")
+        st.subheader("💰 Investment Details")
+        st.write(f"**Symbol:** {selected_fund}     ,    **Invested Capital** {initial_capital}")
         
         # Trade history
         if trade_history_with_cash:
