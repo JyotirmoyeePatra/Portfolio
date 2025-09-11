@@ -56,7 +56,7 @@ if use_custom:
 else:
     #selected_fund = st.sidebar.selectbox("Select Fund", list(ticker_options.keys()))
     selected_funds = st.sidebar.multiselect("Select Funds", list(ticker_options.keys()), default=list(ticker_options.keys())[:3])
-    ticker = ticker_options[selected_fund]
+    ticker = ticker_options[selected_fund]["symbol"]
 
 from datetime import date
 
