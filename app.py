@@ -295,7 +295,9 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             strat_xirr_pct = xirr_value * 100
             outperformance = strat_xirr_pct - bh_xirr_pct
             st.metric("Strategy Outperformance", f"{outperformance:.2f}%")
-        
+
+        st.subheader("📋 Ticker Details")
+        st.write(f"**Symbol:** {selected_fund} with initial amount {initial_capital}}")
         
         # Trade history
         if trade_history_with_cash:
