@@ -23,30 +23,30 @@ st.sidebar.header("Strategy Parameters")
 
 # Predefined tickers
 ticker_options = {
-    "Nippon India Small Cap": "0P0000XVFY.BO",
-    "Motilal Oswal Midcap": "0P0001BAYU.BO",
-    "Parag Parikh Flexi Cap": "0P0000YWL0.BO",
-      "Abbott India": "ABBOTINDIA.NS",
-      "Ashok Leyland": "ASHOKLEY.NS",
-      "Bajaj Finance": "BAJFINANCE.NS",
-      "Bharat Electronics": "BEL.NS",
-      "Cholamandalam Finance": "CHOLAFIN.NS",
-      "Data Patterns": "DATAPATTNS.NS",
-      "Deepak Fertilisers": "DEEPAKFERT.NS",
-      "Eicher Motors": "EICHERMOT.NS",
-      "Godrej Industries": "GODREJIND.NS",
-      "Hindustan Aeronautics": "HAL.NS",
-      "HDFC Bank": "HDFCBANK.NS",
-      "Kirloskar Engines": "KIRLOSENG.NS",
-      "Larsen & Toubro": "LT.NS",
-      "Max Healthcare": "MAXHEALTH.NS",
-      "MCX India": "MCX.NS",
-      "NBCC": "NBCC.NS",
-      "Neuland Labs": "NEULANDLAB.NS",
-      "Narayana Hrudayalaya": "NH.NS",
-      "Nifty BeES": "NIFTYBEES.NS",
-      "Zen Technologies": "ZENTEC.NS",
-       "Gravita": "GRAVITA.NS"
+    "Nippon India Small Cap": {"symbol": "0P0000XVFY.BO", "allocation": 0},
+    "Motilal Oswal Midcap": {"symbol": "0P0001BAYU.BO", "allocation": 0},
+    "Parag Parikh Flexi Cap": {"symbol": "0P0000YWL0.BO", "allocation": 0},
+    "Abbott India": {"symbol": "ABBOTINDIA.NS", "allocation": 0},
+    "Ashok Leyland": {"symbol": "ASHOKLEY.NS", "allocation": 0},
+    "Bajaj Finance": {"symbol": "BAJFINANCE.NS", "allocation": 0},
+    "Bharat Electronics": {"symbol": "BEL.NS", "allocation": 0},
+    "Cholamandalam Finance": {"symbol": "CHOLAFIN.NS", "allocation": 0},
+    "Data Patterns": {"symbol": "DATAPATTNS.NS", "allocation": 0},
+    "Deepak Fertilisers": {"symbol": "DEEPAKFERT.NS", "allocation": 0},
+    "Eicher Motors": {"symbol": "EICHERMOT.NS", "allocation": 0},
+    "Godrej Industries": {"symbol": "GODREJIND.NS", "allocation": 0},
+    "Hindustan Aeronautics": {"symbol": "HAL.NS", "allocation": 0},
+    "HDFC Bank": {"symbol": "HDFCBANK.NS", "allocation": 0},
+    "Kirloskar Engines": {"symbol": "KIRLOSENG.NS", "allocation": 0},
+    "Larsen & Toubro": {"symbol": "LT.NS", "allocation": 0},
+    "Max Healthcare": {"symbol": "MAXHEALTH.NS", "allocation": 0},
+    "MCX India": {"symbol": "MCX.NS", "allocation": 0},
+    "NBCC": {"symbol": "NBCC.NS", "allocation": 0},
+    "Neuland Labs": {"symbol": "NEULANDLAB.NS", "allocation": 0},
+    "Narayana Hrudayalaya": {"symbol": "NH.NS", "allocation": 0},
+    "Nifty BeES": {"symbol": "NIFTYBEES.NS", "allocation": 0},
+    "Zen Technologies": {"symbol": "ZENTEC.NS", "allocation": 0},
+    "Gravita": {"symbol": "GRAVITA.NS", "allocation": 0}
 }
 
 # Allow custom ticker input
@@ -54,7 +54,8 @@ use_custom = st.sidebar.checkbox("Use custom ticker")
 if use_custom:
     ticker = st.sidebar.text_input("Enter ticker symbol", value="0P0001BAYU.BO")
 else:
-    selected_fund = st.sidebar.selectbox("Select Fund", list(ticker_options.keys()))
+    #selected_fund = st.sidebar.selectbox("Select Fund", list(ticker_options.keys()))
+    selected_funds = st.sidebar.multiselect("Select Funds", list(ticker_options.keys()), default=list(ticker_options.keys())[:3])
     ticker = ticker_options[selected_fund]
 
 from datetime import date
