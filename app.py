@@ -57,7 +57,6 @@ else:
     selected_fund = st.sidebar.selectbox("Select Fund", list(ticker_options.keys()))
     ticker = ticker_options[selected_fund]
 
-# Date range
 from datetime import date
 
 # Date range
@@ -83,12 +82,15 @@ start_ord, end_ord = st.sidebar.slider(
     min_value=min_ord,
     max_value=max_ord,
     value=(default_start_ord, default_end_ord),
-    format="YYYY-MM-DD"
 )
 
 # Convert back to date
 start_date_input = date.fromordinal(start_ord)
 end_date_input = date.fromordinal(end_ord)
+
+# Show formatted dates below the slider
+st.sidebar.write("Start Date:", start_date_input.strftime("%Y-%m-%d"))
+st.sidebar.write("End Date:", end_date_input.strftime("%Y-%m-%d"))
 
 # Trading parameters
 st.sidebar.subheader("Trading Parameters")
