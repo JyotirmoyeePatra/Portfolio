@@ -54,8 +54,7 @@ use_custom = st.sidebar.checkbox("Use custom ticker")
 if use_custom:
     ticker = st.sidebar.text_input("Enter ticker symbol", value="0P0001BAYU.BO")
 else:
-    #selected_fund = st.sidebar.selectbox("Select Fund", list(ticker_options.keys()))
-    selected_funds = st.sidebar.multiselect("Select Funds", list(ticker_options.keys()))
+    selected_fund = st.sidebar.selectbox("Select Fund", list(ticker_options.keys()))
     ticker = ticker_options[selected_fund]["symbol"]
 
 from datetime import date
