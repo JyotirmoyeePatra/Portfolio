@@ -59,38 +59,19 @@ else:
 
 from datetime import date
 
+from datetime import datetime, timedelta
+
 # Date range
 st.sidebar.subheader("Date Range")
 
-# Define date range boundaries
 min_date = datetime.now() - timedelta(days=365*20)  # 20 years ago
 max_date = datetime.now()  # Today
 
-# Default dates
 default_start = datetime(2024, 1, 1)
 default_end = datetime.now()
 
-# Convert to ordinal for slider
-min_ord = min_date.toordinal()
-max_ord = max_date.toordinal()
-default_start_ord = default_start.toordinal()
-default_end_ord = default_end.toordinal()
-
-# Create slider
-start_ord, end_ord = st.sidebar.slider(
-    "Select date range",
-    min_value=min_ord,
-    max_value=max_ord,
-    value=(default_start_ord, default_end_ord),
-)
-
-# Convert back to date
-start_date_input = date.fromordinal(start_ord)
-end_date_input = date.fromordinal(end_ord)
-
-# Show formatted dates below the slider
-st.sidebar.write("Start Date:", start_date_input.strftime("%Y-%m-%d"))
-st.sidebar.write("End Date:", end_date_input.strftime("%Y-%m-%d"))
+start_date_input = st.sidebar.date_input("Start Date", value=default_start, min_value=min_date, max_value=max_date)
+end_date_input = st.sidebar.date_input("End Date", value=default_end, min_value=min_date, max_value=max_date)
 
 # Trading parameters
 st.sidebar.subheader("Trading Parameters")
