@@ -100,7 +100,7 @@ end_date_input = st.sidebar.date_input("End Date", value=default_end, min_value=
 
 # Trading parameters
 st.sidebar.subheader("Trading Parameters")
-total_capital = st.sidebar.number_input("Total Capital (₹)", min_value=10000, max_value=10000000, value=60000000, step=10000)
+total_capital = st.sidebar.number_input("Total Capital (₹)", min_value=10000, max_value=100000000, value=60000000, step=10000)
 sell_pct = st.sidebar.slider("Sell percentage (%)", min_value=0, max_value=20, value=5) / 100
 strong_buy_allocation = st.sidebar.slider("Strong Buy allocation (%)", min_value=1, max_value=20, value=10) / 100
 moderate_buy_allocation = st.sidebar.slider("Moderate Buy allocation (%)", min_value=1, max_value=10, value=2) / 100
