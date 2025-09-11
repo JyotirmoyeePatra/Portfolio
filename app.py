@@ -75,7 +75,7 @@ end_date_input = st.sidebar.date_input("End Date", value=default_end, min_value=
 
 # Trading parameters
 st.sidebar.subheader("Trading Parameters")
-initial_capital = st.sidebar.number_input("Initial Capital (₹)", min_value=10000, max_value=10000000, value=1200000, step=10000)
+total_capital = st.sidebar.number_input("Total Capital (₹)", min_value=10000, max_value=10000000, value=1200000, step=10000)
 sell_pct = st.sidebar.slider("Sell percentage (%)", min_value=0, max_value=20, value=5) / 100
 strong_buy_allocation = st.sidebar.slider("Strong Buy allocation (%)", min_value=1, max_value=20, value=10) / 100
 moderate_buy_allocation = st.sidebar.slider("Moderate Buy allocation (%)", min_value=1, max_value=10, value=2) / 100
@@ -121,6 +121,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         progress_bar.progress(50)
         
         # Initialize portfolio
+        initial_capital = total_capital * ticker_options[selected_fund]["allocation"]
         portfolio = {
             'cash': initial_capital,
             'units': 0,
@@ -129,7 +130,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         }
         
         # Apply trading rules
-        status_text.text("Applying trading strategy...")
+        status_text.text(f"Applying trading strategy...for {selected_fund} with initial amount {initial_capital}")
         progress_bar.progress(70)
         
         # Lists to store history data with cash position
@@ -232,7 +233,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 xirr_value = 0
         
         progress_bar.progress(100)
-        status_text.text("Analysis complete!")
+        status_text.text("Analysis complete for {selected_fund} with initial amount {initial_capital}!")
         
         # Display results
         st.success("✅ Analysis completed successfully!")
