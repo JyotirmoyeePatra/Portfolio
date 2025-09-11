@@ -297,7 +297,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             st.metric("Strategy Outperformance", f"{outperformance:.2f}%")
 
         st.subheader("📋 Ticker Details")
-        st.write(f"**Symbol:** {selected_fund} with initial amount {initial_capital}}")
+        st.write(f"**Symbol:** {selected_fund} with initial amount {initial_capital}")
         
         # Trade history
         if trade_history_with_cash:
