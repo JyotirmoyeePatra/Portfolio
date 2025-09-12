@@ -303,7 +303,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         final_price = close_prices[-1]
         
         # --- Replace this chunk ---
-        buy_hold_return = (initial_capital/initial_price) * (final_price) - initial_capital
+        buy_hold_return = ( (initial_capital/initial_price) * (final_price) ) - initial_capital
         total_days = (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days
         total_years = total_days / 365.25
         buy_hold_annualized = ((final_price / initial_price) ** (1/total_years) - 1) * 100
