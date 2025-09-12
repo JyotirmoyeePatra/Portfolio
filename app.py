@@ -180,7 +180,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
 
             interest_income = portfolio['cash'] * daily_interest_rate
             portfolio['cash'] += interest_income
-            #trade_history_with_cash.append((date, 'Interest', 'Cash Interest', f"{profit_threshold}%", interest_income, int(portfolio['cash'])))
+            trade_history_with_cash.append((date, 'Interest', '%ge', profit_threshold, interest_income, int(portfolio['cash'])))
             
             # Strong Buy: 200DMA > 50DMA > Price
             if dma200 > dma50 > price and portfolio['cash'] > 0:
@@ -198,7 +198,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
                     #0.65% for maintenance fees
                     portfolio['cash'] -= buy_amt * .0065
-                    #trade_history_with_cash.append((date, 'Maintenance', 'Fees', "0.65% ",  (buy_amt * .0065), int(portfolio['cash']) ))
+                    trade_history_with_cash.append((date, 'Maintenance', 'Fees %ge', 0.65,  (buy_amt * .0065), int(portfolio['cash']) ))
             
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
@@ -215,8 +215,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     trade_history_with_cash.append((date, 'Buy', 'Moderate', units, price, cash_pos ))
                     #0.65% for maintenance fees
                     portfolio['cash'] -= buy_amt * .0065
-                    #trade_history_with_cash.append((date, 'Maintenance', 'Fees', (buy_amt * .0065), "0.65% ", int(portfolio['cash']) ))
-
+                    trade_history_with_cash.append((date, 'Maintenance', 'Fees %ge', 0.65,  (buy_amt * .0065), int(portfolio['cash']) ))
             
             # Sell if conditions met
             elif (portfolio['units'] > 0 and 
