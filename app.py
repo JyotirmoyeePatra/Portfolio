@@ -12,7 +12,7 @@ import sys
 
 
 # Set page config
-st.set_page_config(page_title="Tutorial - Learn python in 1 hour", layout="wide")
+st.set_page_config(page_title="Learn python in 1 hour.", layout="wide")
 
 # Title and description
 st.title("📈 Portfolio Rebalancing Strategy Analysis")
