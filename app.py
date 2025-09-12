@@ -109,7 +109,13 @@ strong_buy_allocation = st.sidebar.slider("Strong Buy allocation (%)", min_value
 moderate_buy_allocation = st.sidebar.slider("Moderate Buy allocation (%)", min_value=1, max_value=10, value=2) / 100
 profit_threshold = st.sidebar.slider("Profit threshold for selling (%)", min_value=1, max_value=20, value=9)
 daily_interest_rate = profit_threshold / 100 / 365
-maintenance_fee = st.sidebar.slider("Enter maintenance fee", min_value=0, max_value=5, value=.65)
+maintenance_fee = st.sidebar.number_input(
+    label="Annual Maintenance Fee",
+    min_value=0.0,
+    value=0.65,
+    step=.05,
+    format="%.2f"
+)
 
 # Run analysis button
 if st.sidebar.button("🚀 Run Analysis", type="primary"):
