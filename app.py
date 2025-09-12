@@ -246,6 +246,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
 
         
         # Close remaining positions
+        final_cash_rounded = 0.001
         if portfolio['units'] > 0:
             last_price = float(close_prices[-1])
             portfolio['cash'] += portfolio['units'] * last_price
@@ -274,12 +275,12 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 cash_dates.append(date)
         
         # Calculate XIRR
-        xirr_value = 0
+        xirr_value = 0.001
         if len(cash_flows) >= 2:
             try:
-                xirr_value = pyxirr.xirr(cash_dates, cash_flows)
+                xirr_value = ((final_price / initial_price) ** (1 / total_years) - 1) * 100
             except:
-                xirr_value = 0
+                xirr_value = 0.001
         
         progress_bar.progress(100)
         status_text.text("Analysis complete for {selected_fund} with initial amount {initial_capital}!")
@@ -297,8 +298,8 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             st.metric("Total Return", f"₹{total_return:.0f}", f"{return_pct_rounded}")
         
         with col2:
-            xirr_value_rounded = (xirr_value * 100)
-            st.metric("XIRR (Annualized)", f"{round(xirr_value_rounded,2)}%")
+            xirr_pct = xirr_value * 100
+            st.metric("XIRR (Annualized)", f"{round(xirr_pct,2)}%")
         
         with col3:
             st.metric("Total Trades", len(trade_history_with_cash))
@@ -326,7 +327,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         try:
             bh_xirr = pyxirr.xirr(bh_dates, bh_cash_flows)
         except Exception:
-            bh_xirr = 0
+            bh_xirr = 0.001
         bh_xirr_pct = bh_xirr * 100
         simple_bh_return = (final_price / initial_price - 1) * 100
 
