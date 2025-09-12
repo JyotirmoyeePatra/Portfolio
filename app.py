@@ -188,7 +188,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
 
             interest_income = portfolio['cash'] * daily_interest_rate
             portfolio['cash'] += interest_income
-            interest_rate = f"{profit_threshold}%ge"
+            interest_rate = f"{profit_threshold}%"
             trade_history_with_cash.append((date, 'Interest', interest_rate, interest_income, 1, int(portfolio['cash'])))
             
             # Strong Buy: 200DMA > 50DMA > Price
@@ -309,7 +309,6 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         # Buy and Hold comparison
         final_price = close_prices[-1]
         
-        # --- Replace this chunk ---
         buy_hold_return = ( (initial_capital/initial_price) * (final_price) ) - initial_capital
         total_days = (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days
         total_years = total_days / 365.25
@@ -329,6 +328,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         except Exception:
             bh_xirr = 0
         bh_xirr_pct = bh_xirr * 100
+        simple_bh_return = (final_price / initial_price - 1) * 100
 
         #  End replacement ---
                 
@@ -336,14 +336,13 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         comp_col1, comp_col2, comp_col3 = st.columns(3)
         with comp_col1:
             # Optionally still show simple total return
-            simple_bh_return = (final_price / initial_price - 1) * 100
             st.metric("Buy & Hold Return", f"₹{buy_hold_return[0]:.0f}")
         with comp_col2:
-            st.metric("Buy & Hold XIRR (Annualized)", f"{bh_xirr_pct:.2f}%")
+            st.metric("Buy & Hold Simple (Annualized)", f"{simple_bh_return:.2f}%")
         with comp_col3:
             strat_xirr_pct = xirr_value * 100
             outperformance = strat_xirr_pct - bh_xirr_pct
-            st.metric("Strategy Outperformance", f"{outperformance:.2f}%")
+            st.metric("Initial Price", f"{initial_price:.2f}%")
 
         st.subheader("💰 Investment Details")
         st.write(f"**Symbol:** {selected_fund}     ,    **Invested Capital** {initial_capital}")
