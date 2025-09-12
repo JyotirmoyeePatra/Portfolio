@@ -368,7 +368,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 st.metric("Final Value", f"{final_capital[0]:.0f}")
 
         st.subheader("💰 Investment Details")
-        st.write(f"**Symbol:** {ticker}     ,&nbsp;&nbsp;&nbsp;&nbsp; **Invested Capital:** {initial_capital}  ,&nbsp;&nbsp;&nbsp;&nbsp;  **initial_price:** {initial_price[0]} ")
+        st.write(f"**Symbol:** {ticker}     ,&nbsp;&nbsp;&nbsp;&nbsp; **Invested Capital:** {initial_capital} ")
         
         # Trade history
         if trade_history_with_cash:
