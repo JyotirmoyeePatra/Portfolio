@@ -186,15 +186,19 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             if dma200 > dma50 > price and portfolio['cash'] > 0:
                 allocation = portfolio['cash'] * strong_buy_allocation
                 units = allocation / price
-                if units > 0:
+                if units >= 1:
                     portfolio['units'] += units
-                    portfolio['cash'] -= units * price
+                    buy_amt = units * price
+                    portfolio['cash'] -= buy_amt
                     portfolio['last_buy_price'] = price
                     #['Date', 'Action', 'Type', 'Units', 'Price', 'Cash Position']
                     cash_rounded = int(portfolio['cash'][0])
                     cash_pct = int(100*portfolio['cash'][0]/initial_capital)
                     cash_pos = f"{cash_rounded} ( {cash_pct}% )"
                     trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
+                    #0.65% for maintenance fees
+                    portfolio['cash'] -= buy_amt * .0065
+                    trade_history_with_cash.append((date, 'Maintenance', 'Fees 0.65', 0, (buy_amt * .0065), int(portfolio['cash'][0]) ))
             
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
