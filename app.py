@@ -180,7 +180,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
 
             interest_income = portfolio['cash'] * daily_interest_rate
             portfolio['cash'] += interest_income
-            trade_history_with_cash.append((date, 'Interest', 'Cash Interest', f"{profit_threshold}%", interest_income, int(portfolio['cash'])))
+            #trade_history_with_cash.append((date, 'Interest', 'Cash Interest', f"{profit_threshold}%", interest_income, int(portfolio['cash'])))
             
             # Strong Buy: 200DMA > 50DMA > Price
             if dma200 > dma50 > price and portfolio['cash'] > 0:
