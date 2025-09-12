@@ -283,7 +283,6 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         
         with col1:
             total_return = portfolio['cash'][0] - initial_capital
-            st.success("✅ total_return")
             return_pct = (portfolio['cash'] / initial_capital - 1) * 100
             st.metric("Total Return", f"₹{total_return:.2f}", f"{return_pct}%")
         
