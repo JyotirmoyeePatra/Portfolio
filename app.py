@@ -338,14 +338,14 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             # Optionally still show simple total return
             st.metric("Buy & Hold Return", f"₹{buy_hold_return[0]:.0f}")
         with comp_col2:
-            st.metric("Buy & Hold Simple (Annualized)", f"{simple_bh_return:.2f}%")
+            st.metric("Buy & Hold Simple (Annualized)", f"{simple_bh_return}%")
         with comp_col3:
             strat_xirr_pct = xirr_value * 100
             outperformance = strat_xirr_pct - bh_xirr_pct
-            st.metric("Initial Price", f"{initial_price:.2f}%")
+            st.metric("Initial Price", f"{initial_price}")
 
         st.subheader("💰 Investment Details")
-        st.write(f"**Symbol:** {selected_fund}     ,    **Invested Capital** {initial_capital}")
+        st.write(f"**Symbol:** {selected_fund}     ,    **Invested Capital** {initial_capital}    **initial_price** {initial_price} ")
         
         # Trade history
         if trade_history_with_cash:
