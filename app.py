@@ -105,6 +105,7 @@ sell_pct = st.sidebar.slider("Sell percentage (%)", min_value=0, max_value=20, v
 strong_buy_allocation = st.sidebar.slider("Strong Buy allocation (%)", min_value=1, max_value=20, value=4) / 100
 moderate_buy_allocation = st.sidebar.slider("Moderate Buy allocation (%)", min_value=1, max_value=10, value=2) / 100
 profit_threshold = st.sidebar.slider("Profit threshold for selling (%)", min_value=1, max_value=20, value=9)
+daily_interest_rate = profit_threshold / 100 / 365
 
 # Run analysis button
 if st.sidebar.button("🚀 Run Analysis", type="primary"):
@@ -176,6 +177,9 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             dma200 = dma200_values[i]
             
             date = pd.Timestamp(date)
+
+            interest_income = portfolio['cash'] * daily_interest_rate
+            portfolio['cash'] += interest_income
             
             # Strong Buy: 200DMA > 50DMA > Price
             if dma200 > dma50 > price and portfolio['cash'] > 0:
