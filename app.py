@@ -169,9 +169,16 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         dma30_values = data['30DMA'].values
         dma50_values = data['50DMA'].values
         dma200_values = data['200DMA'].values
-        
+
+        initial_price = 0
         for i in range(len(dates)):
             date = dates[i]
+            
+            #Skip past dates.
+            if date < start_date:
+                initial_price = close_prices[i]
+                continue
+            
             price = close_prices[i]
             dma30 = dma30_values[i]
             dma50 = dma50_values[i]
