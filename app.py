@@ -112,7 +112,8 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
     
     # Calculate dates
     end_date = (end_date_input + timedelta(days=1)).strftime("%Y-%m-%d")
-    start_date = (start_date_input - timedelta(days=365)).strftime("%Y-%m-%d") # For calculation of 180 days back..
+    start_date = start_date_input
+    start_date_moving = (start_date - timedelta(days=365)).strftime("%Y-%m-%d") # For calculation of 180 days back..
     
     # Progress bar
     progress_bar = st.progress(0)
@@ -123,7 +124,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         status_text.text("Downloading market data...")
         progress_bar.progress(10)
         
-        data = yf.download(ticker, start=start_date, end=end_date, progress=False)
+        data = yf.download(ticker, start=start_date_moving, end=end_date, progress=False)
         
         if data.empty:
             st.error(f"No data found for ticker {ticker}")
