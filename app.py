@@ -306,7 +306,6 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             st.metric("Final Value", f"₹{portfolio['cash'][0]:.2f}")
         
         # Buy and Hold comparison
-        initial_price = close_prices[0]
         final_price = close_prices[-1]
         
         # --- Replace this chunk ---
