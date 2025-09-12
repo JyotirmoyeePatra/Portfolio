@@ -189,16 +189,16 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 if units >= 1:
                     portfolio['units'] += units
                     buy_amt = units * price
-                    portfolio['cash'][0] -= buy_amt
+                    portfolio['cash'] -= buy_amt
                     portfolio['last_buy_price'] = price
                     #['Date', 'Action', 'Type', 'Units', 'Price', 'Cash Position']
-                    cash_rounded = int(portfolio['cash'][0])
-                    cash_pct = int(100*portfolio['cash'][0]/initial_capital)
+                    cash_rounded = int(portfolio['cash'])
+                    cash_pct = int(100*portfolio['cash']/initial_capital)
                     cash_pos = f"{cash_rounded} ( {cash_pct}% )"
                     trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
                     #0.65% for maintenance fees
                     portfolio['cash'] -= buy_amt * .0065
-                    trade_history_with_cash.append((date, 'Maintenance', 'Fees 0.65', 0, (buy_amt * .0065), int(portfolio['cash'][0]) ))
+                    trade_history_with_cash.append((date, 'Maintenance', 'Fees 0.65', 0, (buy_amt * .0065), int(portfolio['cash']) ))
             
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
@@ -207,15 +207,15 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 if units >= 1:
                     portfolio['units'] += units
                     buy_amt = units * price
-                    portfolio['cash'][0] -= buy_amt
+                    portfolio['cash'] -= buy_amt
                     portfolio['last_buy_price'] = price
-                    cash_rounded = int(portfolio['cash'][0])
-                    cash_pct = int(100*portfolio['cash'][0]/initial_capital)
+                    cash_rounded = int(portfolio['cash'])
+                    cash_pct = int(100*portfolio['cash']/initial_capital)
                     cash_pos = f"{cash_rounded} ( {cash_pct}% )"
                     trade_history_with_cash.append((date, 'Buy', 'Moderate', units, price, cash_pos ))
                     #0.65% for maintenance fees
                     portfolio['cash'] -= buy_amt * .0065
-                    trade_history_with_cash.append((date, 'Maintenance', 'Fees 0.65', 0, (buy_amt * .0065), int(portfolio['cash'][0]) ))
+                    trade_history_with_cash.append((date, 'Maintenance', 'Fees 0.65', 0, (buy_amt * .0065), int(portfolio['cash']) ))
 
             
             # Sell if conditions met
@@ -230,9 +230,9 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     if units_to_sell >= 1 :
                         portfolio['units'] -= units_to_sell
                         sell_amt = units_to_sell * price
-                        portfolio['cash'][0] += sell_amt
-                        cash_rounded = int(portfolio['cash'][0])
-                        cash_pct = int(100*portfolio['cash'][0]/initial_capital)
+                        portfolio['cash'] += sell_amt
+                        cash_rounded = int(portfolio['cash'])
+                        cash_pct = int(100*portfolio['cash']/initial_capital)
                         cash_pos = f"{cash_rounded} ( {cash_pct}% )"
                         trade_history_with_cash.append((date, 'Sell', 'Profit_Taking', units_to_sell, price, cash_pos ))
 
@@ -241,8 +241,8 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         if portfolio['units'] > 0:
             last_price = float(close_prices[-1])
             portfolio['cash'] += portfolio['units'] * last_price
-            cash_rounded = int(portfolio['cash'][0])
-            cash_pct = int(100*portfolio['cash'][0]/initial_capital)
+            cash_rounded = int(portfolio['cash'])
+            cash_pct = int(100*portfolio['cash']/initial_capital)
             cash_pos = f"{cash_rounded} ( {cash_pct}% )"
             trade_history_with_cash.append((pd.Timestamp(dates[-1]), 'Sell',  'Final_Exit', portfolio['units'], last_price, cash_pos ))
             portfolio['units'] = 0
