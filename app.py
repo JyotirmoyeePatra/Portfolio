@@ -276,11 +276,10 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         
         # Calculate XIRR
         xirr_value = 0.001
-        if len(cash_flows) >= 2:
-            try:
-                xirr_value = ((final_price / initial_price) ** (1 / total_years) - 1) * 100
-            except:
-                xirr_value = 0.001
+        try:
+            xirr_value = ((final_price / initial_price) ** (1 / total_years) - 1) * 100
+        except:
+            xirr_value = 0.001
         
         progress_bar.progress(100)
         status_text.text("Analysis complete for {selected_fund} with initial amount {initial_capital}!")
