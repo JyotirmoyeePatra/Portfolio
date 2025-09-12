@@ -23,6 +23,9 @@ st.sidebar.header("Strategy Parameters")
 
 # Predefined tickers
 ticker_options = {
+    "Motilal Oswal Midcap": {"symbol": "0P0001BAYU.BO", "percent": 100},
+    "Nifty BeES": {"symbol": "^NSEI", "percent": 100},
+    "Parag Parikh Flexi Cap": {"symbol": "0P0000YWL0.BO", "percent": 100},
     "Abbott India": {"symbol": "ABBOTINDIA.NS", "percent": 2},
     "Amber Enterprises India Limited": {"symbol": "AMBER.NS", "percent": 3.54},
     "Angel One Limited": {"symbol": "ANGELONE.NS", "percent": 1.96},
@@ -52,13 +55,10 @@ ticker_options = {
     "Max Healthcare": {"symbol": "MAXHEALTH.NS", "percent": .4},
     "Muthoot Finance Limited": {"symbol": "MUTHOOTFIN.NS", "percent": 2.38},
     "Multi Commodity Exchange of India Limited": {"symbol": "MCX.NS", "percent": 3.45},
-    "Motilal Oswal Midcap": {"symbol": "0P0001BAYU.BO", "percent": 2},
     "NBCC": {"symbol": "NBCC.NS", "percent": .15},
     "Neuland Labs": {"symbol": "NEULANDLAB.NS", "percent": .01},
     "Narayana Hrudayalaya": {"symbol": "NH.NS", "percent": .25},
-    "Nifty BeES": {"symbol": "^NSEI", "percent": 100},
     "Onesource Specialty Pharma Limited": {"symbol": "ONESOURCE.NS", "percent": 2.99},
-    "Parag Parikh Flexi Cap": {"symbol": "0P0000YWL0.BO", "percent": 2},
     "PB Fintech Limited": {"symbol": "PBFINTECH.NS", "percent": 1.96},
     "Premier Energies Limited": {"symbol": "PREMIER.NS", "percent": 2.78},
     "Prestige Estates Projects Limited": {"symbol": "PRESTIGE.NS", "percent": 3.16},
