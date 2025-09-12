@@ -329,7 +329,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         with comp_col1:
             # Optionally still show simple total return
             simple_bh_return = (final_price / initial_price - 1) * 100
-            st.metric("Buy & Hold Return", f"₹{buy_hold_return[0]:.0f}, f"{simple_bh_return}%"")
+            st.metric("Buy & Hold Return", f"₹{buy_hold_return[0]:.0f}, f"{simple_bh_return}%")
         with comp_col2:
             st.metric("Buy & Hold XIRR (Annualized)", f"{bh_xirr_pct:.2f}%")
         with comp_col3:
