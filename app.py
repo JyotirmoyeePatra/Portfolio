@@ -85,6 +85,7 @@ else:
     selected_fund = st.sidebar.selectbox("Select Fund", list(ticker_options.keys()))
     ticker = ticker_options[selected_fund]["symbol"]
 
+maintenance_fee = st.sidebar.slider("Enter maintenance fee", min_value=0, max_value=5, value=.65)
 from datetime import date
 
 from datetime import datetime, timedelta
@@ -216,9 +217,9 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     cash_pct = int(100*portfolio['cash']/initial_capital)
                     cash_pos = f"{cash_rounded} ( {cash_pct}% )"
                     trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
-                    #0.65% for maintenance fees
+                    #Maintenance fees
                     portfolio['cash'] -= buy_amt * .0065
-                    trade_history_with_cash.append((date, 'Maintenance', 'Fees', 0.65,  (buy_amt * .0065), int(portfolio['cash']) ))
+                    trade_history_with_cash.append((date, 'Maintenance', 'Fees', maintenance_fee,  (buy_amt * maintenance_fee / 100), int(portfolio['cash']) ))
             
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
@@ -235,7 +236,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     trade_history_with_cash.append((date, 'Buy', 'Moderate', units, price, cash_pos ))
                     #0.65% for maintenance fees
                     portfolio['cash'] -= buy_amt * .0065
-                    trade_history_with_cash.append((date, 'Maintenance', 'Fees', 0.65,  (buy_amt * .0065), int(portfolio['cash']) ))
+                    trade_history_with_cash.append((date, 'Maintenance', 'Fees', maintenance_fee,  (buy_amt * maintenance_fee / 100), int(portfolio['cash']) ))
             
             # Sell if conditions met
             elif (portfolio['units'] > 0 and 
