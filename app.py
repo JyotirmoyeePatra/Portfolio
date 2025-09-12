@@ -7,6 +7,9 @@ import pyxirr
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import plotly.express as px
+import traceback
+import sys
+
 
 # Set page config
 st.set_page_config(page_title="Portfolio Rebalancing Strategy", layout="wide")
@@ -148,7 +151,10 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         progress_bar.progress(50)
         
         # Initialize portfolio
-        initial_capital = round(total_capital * ticker_options[selected_fund]["percent"] / 100)
+        initial_capital = total_capital
+        if not use_custom:
+            initial_capital = round(total_capital * ticker_options[selected_fund]["percent"] / 100)
+
         portfolio = {
             'cash': initial_capital,
             'units': 0,
@@ -157,7 +163,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         }
         
         # Apply trading rules
-        status_text.text(f"Applying trading strategy...for {selected_fund} with initial amount {initial_capital}")
+        status_text.text(f"Applying trading strategy...for {ticker} with initial amount {initial_capital}")
         progress_bar.progress(70)
         
         # Lists to store history data with cash position
@@ -171,6 +177,8 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         dma200_values = data['200DMA'].values
 
         initial_price = 0
+        final_price = close_prices[-1]        
+
         for i in range(len(dates)):
             date = dates[i]
             
@@ -189,12 +197,15 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             interest_income = portfolio['cash'] * daily_interest_rate
             portfolio['cash'] += interest_income
             interest_rate = f"{profit_threshold}%"
-            trade_history_with_cash.append((date, 'Interest', interest_rate, interest_income, 1, int(portfolio['cash'])))
+            cash_rounded = int(portfolio['cash'])
+            cash_pct = int(100*portfolio['cash']/initial_capital)
+            cash_pos = f"{cash_rounded} ( {cash_pct}% )"
+            trade_history_with_cash.append((date, 'Interest', interest_rate, interest_income, 1, cash_pos))
             
             # Strong Buy: 200DMA > 50DMA > Price
             if dma200 > dma50 > price and portfolio['cash'] > 0:
                 allocation = portfolio['cash'] * strong_buy_allocation
-                units = int(allocation / price)
+                units = int(allocation / price[0])
                 if units >= 1:
                     portfolio['units'] += units
                     buy_amt = units * price
@@ -212,7 +223,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
                 allocation = portfolio['cash'] * moderate_buy_allocation
-                units = int(allocation / price)
+                units = int(allocation / price[0])
                 if units >= 1:
                     portfolio['units'] += units
                     buy_amt = units * price
@@ -280,12 +291,13 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         
         xirr_value = 0.001
         try:
-            xirr_value = ((final_price / initial_price) ** (1 / total_years) - 1) * 100
+            xirr_value = ((portfolio['cash'][0] / initial_capital) ** (1 / total_years) - 1) * 100
+            print ( f"{xirr_value} = (({portfolio['cash'][0]} / {initial_capital}) ** (1 / {total_years}) - 1) * 100")
         except:
             xirr_value = 0.001
         
         progress_bar.progress(100)
-        status_text.text("Analysis complete for {selected_fund} with initial amount {initial_capital}!")
+        status_text.text("Analysis complete for {ticker} with initial amount {initial_capital}!")
         
         # Display results
         st.success("✅ Analysis completed successfully!")
@@ -293,27 +305,29 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         # Key metrics
         col1, col2, col3, col4 = st.columns(4)
         
-        with col1:
-            total_return = portfolio['cash'][0] - initial_capital
-            return_pct = (portfolio['cash'][0] / initial_capital - 1) * 100
-            return_pct_rounded = f"{return_pct:.2f}%"
-            st.metric("Total Return", f"₹{total_return:.0f}", f"{return_pct_rounded}")
-        
-        with col2:
-            xirr_pct = xirr_value * 100
-            st.metric("XIRR (Annualized)", f"{round(xirr_pct,2)}%")
-        
-        with col3:
+        try:
+            with col1:
+                total_return = portfolio['cash'][0] - initial_capital
+                return_pct = (portfolio['cash'][0] / initial_capital - 1) * 100
+                return_pct_rounded = f"{return_pct:.2f}%"
+                st.metric("Total Profit", f"₹{total_return:.0f}", f"{return_pct_rounded}")
+            
+            with col2:
+                st.metric("CAGR (Annualized)", f"{xirr_value:.2f}%")
+            
+            with col3:
+                st.metric("Total Trades", len(trade_history_with_cash))
+            
+            with col4:
+                st.metric("Final Value", f"₹{portfolio['cash'][0]:.0f}")
+        except:
             st.metric("Total Trades", len(trade_history_with_cash))
         
-        with col4:
-            st.metric("Final Value", f"₹{portfolio['cash'][0]:.0f}")
-        
         # Buy and Hold comparison
-        final_price = close_prices[-1]
-        
-        buy_hold_return = ( (initial_capital/initial_price) * (final_price) ) - initial_capital
-        buy_hold_annualized = ((final_price / initial_price) ** (1/total_years) - 1) * 100
+        buy_qty = initial_capital/initial_price
+        final_capital = (buy_qty * final_price)
+        buy_hold_profit = final_capital - initial_capital
+        buy_hold_annualized = ( (final_capital / initial_capital) ** (1 / total_years) - 1) * 100
         
         #  Buy & Hold via XIRR ---
         bh_cash_flows = [
@@ -337,16 +351,16 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         comp_col1, comp_col2, comp_col3 = st.columns(3)
         with comp_col1:
             # Optionally still show simple total return
-            st.metric("Buy & Hold Return", f"₹{buy_hold_return[0]:.0f}")
+            st.metric("Buy & Hold Return", f"₹{buy_hold_profit[0]:.0f}")
         with comp_col2:
-            st.metric("Buy & Hold Simple (Annualized)", f"{simple_bh_return}%")
+            st.metric("Buy & Hold (Annualized)", f"{buy_hold_annualized[0]:.2f}%")
         with comp_col3:
             strat_xirr_pct = xirr_value * 100
             outperformance = strat_xirr_pct - bh_xirr_pct
-            st.metric("Initial Price", f"{initial_price}")
+            st.metric("Final Value", f"{final_capital[0]:.0f}")
 
         st.subheader("💰 Investment Details")
-        st.write(f"**Symbol:** {selected_fund}     ,    **Invested Capital** {initial_capital}    **initial_price** {initial_price} ")
+        st.write(f"**Symbol:** {ticker}     ,&nbsp;&nbsp;&nbsp;&nbsp; **Invested Capital:** {initial_capital}  ,&nbsp;&nbsp;&nbsp;&nbsp;  **initial_price:** {initial_price[0]} ")
         
         # Trade history
         if trade_history_with_cash:
@@ -403,6 +417,13 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                         st.write(f"**Net Profit/Loss:** ₹{net_profit:,.2f}")
     
     except Exception as e:
+        exc_type, exc_value, exc_tb = sys.exc_info()
+        tb = traceback.extract_tb(exc_tb)
+        filename, line_number, function_name, text = tb[-1]
+
+        st.error(f"An error occurred: {e}")
+        st.error(f"Location: File '{filename}', line {line_number}, in {function_name}")
+        st.error(f"Code: {text}")        
         st.error(f"An error occurred: {str(e)}")
         st.write("Please check your ticker symbol and try again.")
     
