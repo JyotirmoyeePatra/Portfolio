@@ -194,7 +194,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             # Strong Buy: 200DMA > 50DMA > Price
             if dma200 > dma50 > price and portfolio['cash'] > 0:
                 allocation = portfolio['cash'] * strong_buy_allocation
-                units = allocation / price
+                units = int(allocation / price)
                 if units >= 1:
                     portfolio['units'] += units
                     buy_amt = units * price
@@ -207,12 +207,12 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
                     #0.65% for maintenance fees
                     portfolio['cash'] -= buy_amt * .0065
-                    trade_history_with_cash.append((date, 'Maintenance', 'Fees %ge', 0.65,  (buy_amt * .0065), int(portfolio['cash']) ))
+                    trade_history_with_cash.append((date, 'Maintenance', 'Fees', 0.65,  (buy_amt * .0065), int(portfolio['cash']) ))
             
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
                 allocation = portfolio['cash'] * moderate_buy_allocation
-                units = allocation / price
+                units = int(allocation / price)
                 if units >= 1:
                     portfolio['units'] += units
                     buy_amt = units * price
@@ -224,7 +224,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     trade_history_with_cash.append((date, 'Buy', 'Moderate', units, price, cash_pos ))
                     #0.65% for maintenance fees
                     portfolio['cash'] -= buy_amt * .0065
-                    trade_history_with_cash.append((date, 'Maintenance', 'Fees %ge', 0.65,  (buy_amt * .0065), int(portfolio['cash']) ))
+                    trade_history_with_cash.append((date, 'Maintenance', 'Fees', 0.65,  (buy_amt * .0065), int(portfolio['cash']) ))
             
             # Sell if conditions met
             elif (portfolio['units'] > 0 and 
@@ -234,7 +234,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 pct_change = (price - portfolio['last_buy_price']) / portfolio['last_buy_price'] * 100
                 
                 if pct_change >= profit_threshold:
-                    units_to_sell = portfolio['units'] * sell_pct
+                    units_to_sell = int(portfolio['units'] * sell_pct)
                     if units_to_sell >= 1 :
                         portfolio['units'] -= units_to_sell
                         sell_amt = units_to_sell * price
