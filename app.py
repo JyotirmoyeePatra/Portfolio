@@ -200,7 +200,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
                 allocation = portfolio['cash'] * moderate_buy_allocation
                 units = allocation / price
-                if units > 0:
+                if units >= 1:
                     portfolio['units'] += units
                     buy_amt = units * price
                     portfolio['cash'] -= buy_amt
@@ -211,7 +211,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     trade_history_with_cash.append((date, 'Buy', 'Moderate', units, price, cash_pos ))
                     #0.65% for maintenance fees
                     portfolio['cash'] -= buy_amt * .0065
-                    trade_history_with_cash.append((date, 'Maintenance Fees', '0.65', 0, buy_amt * .0065, int(portfolio['cash'][0]) ))
+                    trade_history_with_cash.append((date, 'Maintenance', 'Fees 0.65', 0, (buy_amt * .0065), int(portfolio['cash'][0]) ))
 
             
             # Sell if conditions met
