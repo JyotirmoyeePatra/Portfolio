@@ -202,12 +202,17 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 units = allocation / price
                 if units > 0:
                     portfolio['units'] += units
-                    portfolio['cash'] -= units * price
+                    buy_amt = units * price
+                    portfolio['cash'] -= buy_amt
                     portfolio['last_buy_price'] = price
                     cash_rounded = int(portfolio['cash'][0])
                     cash_pct = int(100*portfolio['cash'][0]/initial_capital)
                     cash_pos = f"{cash_rounded} ( {cash_pct}% )"
                     trade_history_with_cash.append((date, 'Buy', 'Moderate', units, price, cash_pos ))
+                    #0.65% for maintenance fees
+                    portfolio['cash'] -= buy_amt * .0065
+                    trade_history_with_cash.append((date, 'Maintenance Fees', '0.65', 0, buy_amt * .0065, int(portfolio['cash'][0]) ))
+
             
             # Sell if conditions met
             elif (portfolio['units'] > 0 and 
@@ -220,11 +225,13 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     units_to_sell = portfolio['units'] * sell_pct
                     if units_to_sell >= 1 :
                         portfolio['units'] -= units_to_sell
-                        portfolio['cash'] += units_to_sell * price
+                        sell_amt = round(units_to_sell * price)
+                        portfolio['cash'] += sell_amt
                         cash_rounded = int(portfolio['cash'][0])
                         cash_pct = int(100*portfolio['cash'][0]/initial_capital)
                         cash_pos = f"{cash_rounded} ( {cash_pct}% )"
                         trade_history_with_cash.append((date, 'Sell', 'Profit_Taking', units_to_sell, price, cash_pos ))
+
         
         # Close remaining positions
         if portfolio['units'] > 0:
