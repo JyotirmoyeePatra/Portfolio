@@ -331,40 +331,41 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             st.metric("Total Trades", len(trade_history_with_cash))
         
         # Buy and Hold comparison
-        buy_qty = initial_capital/initial_price
-        final_capital = (buy_qty * final_price)
-        buy_hold_profit = final_capital - initial_capital
-        buy_hold_annualized = ( (final_capital / initial_capital) ** (1 / total_years) - 1) * 100
-        
-        #  Buy & Hold via XIRR ---
-        bh_cash_flows = [
-            -initial_capital,
-            portfolio['cash']
-        ]
-        bh_dates = [
-            pd.to_datetime(dates[0]),
-            pd.to_datetime(dates[-1])
-        ]
-        try:
-            bh_xirr = pyxirr.xirr(bh_dates, bh_cash_flows)
-        except Exception:
-            bh_xirr = 0.001
-        bh_xirr_pct = bh_xirr * 100
-        simple_bh_return = (final_price / initial_price - 1) * 100
-
-        #  End replacement ---
-                
-        st.subheader(" Strategy vs Buy & Hold")
-        comp_col1, comp_col2, comp_col3 = st.columns(3)
-        with comp_col1:
-            # Optionally still show simple total return
-            st.metric("Buy & Hold Return", f"₹{buy_hold_profit[0]:.0f}")
-        with comp_col2:
-            st.metric("Buy & Hold (Annualized)", f"{buy_hold_annualized[0]:.2f}%")
-        with comp_col3:
-            strat_xirr_pct = xirr_value * 100
-            outperformance = strat_xirr_pct - bh_xirr_pct
-            st.metric("Final Value", f"{final_capital[0]:.0f}")
+        if initial_price > 0 :
+            buy_qty = initial_capital/initial_price
+            final_capital = (buy_qty * final_price)
+            buy_hold_profit = final_capital - initial_capital
+            buy_hold_annualized = ( (final_capital / initial_capital) ** (1 / total_years) - 1) * 100
+            
+            #  Buy & Hold via XIRR ---
+            bh_cash_flows = [
+                -initial_capital,
+                portfolio['cash']
+            ]
+            bh_dates = [
+                pd.to_datetime(dates[0]),
+                pd.to_datetime(dates[-1])
+            ]
+            try:
+                bh_xirr = pyxirr.xirr(bh_dates, bh_cash_flows)
+            except Exception:
+                bh_xirr = 0.001
+            bh_xirr_pct = bh_xirr * 100
+            simple_bh_return = (final_price / initial_price - 1) * 100
+    
+            #  End replacement ---
+                    
+            st.subheader(" Strategy vs Buy & Hold")
+            comp_col1, comp_col2, comp_col3 = st.columns(3)
+            with comp_col1:
+                # Optionally still show simple total return
+                st.metric("Buy & Hold Return", f"₹{buy_hold_profit[0]:.0f}")
+            with comp_col2:
+                st.metric("Buy & Hold (Annualized)", f"{buy_hold_annualized[0]:.2f}%")
+            with comp_col3:
+                strat_xirr_pct = xirr_value * 100
+                outperformance = strat_xirr_pct - bh_xirr_pct
+                st.metric("Final Value", f"{final_capital[0]:.0f}")
 
         st.subheader("💰 Investment Details")
         st.write(f"**Symbol:** {ticker}     ,&nbsp;&nbsp;&nbsp;&nbsp; **Invested Capital:** {initial_capital}  ,&nbsp;&nbsp;&nbsp;&nbsp;  **initial_price:** {initial_price[0]} ")
