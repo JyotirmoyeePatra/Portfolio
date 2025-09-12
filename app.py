@@ -56,7 +56,7 @@ ticker_options = {
     "NBCC": {"symbol": "NBCC.NS", "percent": .15},
     "Neuland Labs": {"symbol": "NEULANDLAB.NS", "percent": .01},
     "Narayana Hrudayalaya": {"symbol": "NH.NS", "percent": .25},
-    "Nifty BeES": {"symbol": "NIFTYBEES.NS", "percent": 2},
+    "Nifty BeES": {"symbol": "^NSEI", "percent": 100},
     "Onesource Specialty Pharma Limited": {"symbol": "ONESOURCE.NS", "percent": 2.99},
     "Parag Parikh Flexi Cap": {"symbol": "0P0000YWL0.BO", "percent": 2},
     "PB Fintech Limited": {"symbol": "PBFINTECH.NS", "percent": 1.96},
