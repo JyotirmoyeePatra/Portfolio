@@ -282,9 +282,10 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            total_return = portfolio['cash'] - initial_capital
+            total_return = portfolio['cash'][0] - initial_capital
+            st.success("✅ total_return")
             return_pct = (portfolio['cash'] / initial_capital - 1) * 100
-            st.metric("Total Return", f"₹{total_return[0]:.2f}", f"{return_pct}%")
+            st.metric("Total Return", f"₹{total_return:.2f}", f"{return_pct}%")
         
         with col2:
             xirr_value_rounded = (xirr_value * 100)
@@ -301,15 +302,15 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         final_price = close_prices[-1]
         
         # --- Replace this chunk ---
-        # buy_hold_return = (final_price / initial_price - 1) * 100
-        # total_days = (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days
-        # total_years = total_days / 365.25
-        # buy_hold_annualized = ((final_price / initial_price) ** (1/total_years) - 1) * 100
+        buy_hold_return = (final_price / initial_price - 1) * 100
+        total_days = (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days
+        total_years = total_days / 365.25
+        buy_hold_annualized = ((final_price / initial_price) ** (1/total_years) - 1) * 100
         
         #  Buy & Hold via XIRR ---
         bh_cash_flows = [
             -initial_capital,
-            portfolio['cash'][0]
+            portfolio['cash']
         ]
         bh_dates = [
             pd.to_datetime(dates[0]),
