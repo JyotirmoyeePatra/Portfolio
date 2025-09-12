@@ -285,7 +285,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         with col1:
             total_return = portfolio['cash'][0] - initial_capital
             return_pct = (portfolio['cash'] / initial_capital - 1) * 100
-            st.metric("Total Return", f"₹{total_return:.2f}", f"{return_pct}%")
+            st.metric("Total Return", f"₹{total_return:.0f}", f"{return_pct}:.2f%")
         
         with col2:
             xirr_value_rounded = (xirr_value * 100)
@@ -329,7 +329,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         with comp_col1:
             # Optionally still show simple total return
             simple_bh_return = (final_price / initial_price - 1) * 100
-            st.metric("Buy & Hold Return", f"{buy_hold_return[0]:.0f}")
+            st.metric("Buy & Hold Return", f"₹{buy_hold_return[0]:.0f}, f"{simple_bh_return}:.2f%"")
         with comp_col2:
             st.metric("Buy & Hold XIRR (Annualized)", f"{bh_xirr_pct:.2f}%")
         with comp_col3:
