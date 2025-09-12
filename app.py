@@ -116,6 +116,7 @@ maintenance_fee = st.sidebar.number_input(
     step=.05,
     format="%.2f"
 )
+initial_price = 0.0
 
 # Run analysis button
 if st.sidebar.button("🚀 Run Analysis", type="primary"):
@@ -183,7 +184,6 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         dma50_values = data['50DMA'].values
         dma200_values = data['200DMA'].values
 
-        initial_price = 0
         final_price = close_prices[-1]        
 
         for i in range(len(dates)):
