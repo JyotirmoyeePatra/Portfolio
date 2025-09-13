@@ -104,11 +104,12 @@ end_date_input = st.sidebar.date_input("End Date", value=default_end, min_value=
 # Trading parameters
 st.sidebar.subheader("Trading Parameters")
 total_capital = st.sidebar.number_input("Total Capital (₹)", min_value=10000, max_value=500000000, value=60000000, step=10000)
-sell_pct = st.sidebar.slider("Sell percentage (%)", min_value=0, max_value=20, value=5) / 100
-strong_buy_allocation = st.sidebar.slider("Strong Buy allocation (%)", min_value=1, max_value=20, value=4) / 100
+sell_pct = st.sidebar.slider("Sell percentage (%)", min_value=0, max_value=20, value=1) / 100
+strong_buy_allocation = st.sidebar.slider("Strong Buy allocation (%)", min_value=1, max_value=20, value=10) / 100
 moderate_buy_allocation = st.sidebar.slider("Moderate Buy allocation (%)", min_value=1, max_value=10, value=2) / 100
-profit_threshold = st.sidebar.slider("Profit threshold for selling (%)", min_value=1, max_value=20, value=9)
-daily_interest_rate = profit_threshold / 100 / 365
+profit_threshold = st.sidebar.slider("Profit threshold for selling (%)", min_value=1, max_value=20, value=5)
+interest_rate_pct = 8.25
+daily_interest_rate = interest_rate_pct / 100 / 365
 maintenance_fee = st.sidebar.number_input(
     label="Annual Maintenance Fee",
     min_value=0.0,
@@ -203,7 +204,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
 
             interest_income = portfolio['cash'] * daily_interest_rate
             portfolio['cash'] += interest_income
-            interest_rate = f"{profit_threshold}%"
+            interest_rate = f"{interest_rate_pct}%"
             cash_rounded = int(portfolio['cash'])
             cash_pct = int(100*portfolio['cash']/initial_capital)
             cash_pos = f"{cash_rounded} ( {cash_pct}% )"
