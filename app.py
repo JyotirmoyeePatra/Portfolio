@@ -206,7 +206,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             portfolio['cash'] += interest_income
             interest_rate = f"{interest_rate_pct}%"
             cash_rounded = int(portfolio['cash'])
-            cash_pct = int(100*portfolio['cash']/initial_capital)
+            cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
             cash_pos = f"{cash_rounded} ( {cash_pct}% )"
             trade_history_with_cash.append((date, 'Interest', interest_rate, interest_income, 1, cash_pos))
             
