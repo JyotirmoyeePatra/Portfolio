@@ -227,8 +227,8 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             # Strong Buy: 200DMA > 50DMA > Price
             if dma200 > dma50 > price and portfolio['cash'] > 0:
                 allocation = initial_capital * strong_buy_allocation
-                if portfolio['cash'] < allocation :
-                    allocation = portfolio['cash']
+               if portfolio['cash'] < ( 1 + (maintenance_fee / 100) ) * portfolio['cash'] :
+                    allocation = ( 1 - (maintenance_fee / 100) ) * portfolio['cash']
                 
                 units = int(allocation / price[0])
                 if units >= 1:
@@ -242,14 +242,14 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     cash_pos = f"{cash_rounded} ( {cash_pct}% )"
                     trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
                     #Maintenance fees
-                    portfolio['cash'] -= buy_amt * .0065
+                    portfolio['cash'] -= buy_amt * maintenance_fee / 100
                     trade_history_with_cash.append((date, 'Maintenance', 'Fees', maintenance_fee,  (buy_amt * maintenance_fee / 100), int(portfolio['cash']) ))
             
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
                 allocation = initial_capital * moderate_buy_allocation
-                if portfolio['cash'] < allocation :
-                    allocation = portfolio['cash']
+                if portfolio['cash'] < ( 1 + (maintenance_fee / 100) ) * portfolio['cash'] :
+                    allocation = ( 1 - (maintenance_fee / 100) ) * portfolio['cash']
                 
                 units = int(allocation / price[0])
                 
@@ -263,7 +263,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     cash_pos = f"{cash_rounded} ( {cash_pct}% )"
                     trade_history_with_cash.append((date, 'Buy', 'Moderate', units, price, cash_pos ))
                     #0.65% for maintenance fees
-                    portfolio['cash'] -= buy_amt * .0065
+                    portfolio['cash'] -= buy_amt * maintenance_fee / 100
                     trade_history_with_cash.append((date, 'Maintenance', 'Fees', maintenance_fee,  (buy_amt * maintenance_fee / 100), int(portfolio['cash']) ))
             
             # Sell if conditions met
