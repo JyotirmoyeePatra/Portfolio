@@ -247,8 +247,12 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
-                allocation = portfolio['cash'] * moderate_buy_allocation
+                allocation = initial_capital * moderate_buy_allocation
+                if portfolio['cash'] < allocation :
+                    allocation = portfolio['cash']
+                
                 units = int(allocation / price[0])
+                
                 if units >= 1:
                     portfolio['units'] += units
                     buy_amt = units * price
