@@ -220,7 +220,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 cash_rounded = int(portfolio['cash'])
                 cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
                 cash_pos = f"{cash_rounded} ( {cash_pct}% )"
-                trade_history_with_cash.append((date, 'Interest', interest_rate, interest_income, 1, cash_pos))
+                trade_history_with_cash.append((date, 'Interest', interest_rate, interest_income, days, cash_pos))
             
             # Strong Buy: 200DMA > 50DMA > Price
             if dma200 > dma50 > price and portfolio['cash'] > 0:
