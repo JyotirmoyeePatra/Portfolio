@@ -227,7 +227,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             # Strong Buy: 200DMA > 50DMA > Price
             if dma200 > dma50 > price and portfolio['cash'] > 0:
                 allocation = initial_capital * strong_buy_allocation
-                if portfolio['cash'] < ( 1 + (maintenance_fee / 100) ) * portfolio['cash'] :
+                if portfolio['cash'] < ( 1 + (maintenance_fee / 100) ) * allocation :
                     allocation = ( 1 - (maintenance_fee / 100) ) * portfolio['cash']
                 
                 units = int(allocation / price[0])
@@ -248,7 +248,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             # Moderate Buy: 50DMA > 30DMA > Price
             elif dma50 > dma30 > price and portfolio['cash'] > 0:
                 allocation = initial_capital * moderate_buy_allocation
-                if portfolio['cash'] < ( 1 + (maintenance_fee / 100) ) * portfolio['cash'] :
+                if portfolio['cash'] < ( 1 + (maintenance_fee / 100) ) * allocation :
                     allocation = ( 1 - (maintenance_fee / 100) ) * portfolio['cash']
                 
                 units = int(allocation / price[0])
