@@ -185,30 +185,37 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         dma50_values = data['50DMA'].values
         dma200_values = data['200DMA'].values
 
-        final_price = close_prices[-1]        
+        final_price = close_prices[-1]
+        last_date = datetime.now().date()
+        initial_price = -1
 
         for i in range(len(dates)):
-            date = dates[i]
+            date_str = dates[i]
             
             #Skip past dates.
-            if pd.Timestamp(date).date() < start_date:
+            date = pd.Timestamp(date_str).date()
+            if date < start_date:
                 initial_price = close_prices[i]
                 continue
+
+            if initial_price == -1:
+                initial_price = close_prices[0]
             
             price = close_prices[i]
             dma30 = dma30_values[i]
             dma50 = dma50_values[i]
             dma200 = dma200_values[i]
             
-            date = pd.Timestamp(date)
-
-            interest_income = portfolio['cash'] * daily_interest_rate
-            portfolio['cash'] += interest_income
-            interest_rate = f"{interest_rate_pct}%"
-            cash_rounded = int(portfolio['cash'])
-            cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
-            cash_pos = f"{cash_rounded} ( {cash_pct}% )"
-            trade_history_with_cash.append((date, 'Interest', interest_rate, interest_income, 1, cash_pos))
+            days = (date - last_date).days
+            last_date = date
+            if days > 0 :
+                interest_income = portfolio['cash'] * daily_interest_rate * days
+                portfolio['cash'] += interest_income
+                interest_rate = f"{interest_rate_pct}%"
+                cash_rounded = int(portfolio['cash'])
+                cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
+                cash_pos = f"{cash_rounded} ( {cash_pct}% )"
+                trade_history_with_cash.append((date, 'Interest', interest_rate, interest_income, 1, cash_pos))
             
             # Strong Buy: 200DMA > 50DMA > Price
             if dma200 > dma50 > price and portfolio['cash'] > 0:
