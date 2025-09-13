@@ -226,7 +226,10 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             
             # Strong Buy: 200DMA > 50DMA > Price
             if dma200 > dma50 > price and portfolio['cash'] > 0:
-                allocation = portfolio['cash'] * strong_buy_allocation
+                allocation = initial_capital * strong_buy_allocation
+                if portfolio['cash'] < allocation :
+                    allocation = portfolio['cash']
+                
                 units = int(allocation / price[0])
                 if units >= 1:
                     portfolio['units'] += units
