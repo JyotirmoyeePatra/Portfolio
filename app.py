@@ -186,7 +186,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         dma200_values = data['200DMA'].values
 
         final_price = close_prices[-1]
-        last_date = datetime.now().date()
+        last_date = -1
         initial_price = -1
 
         for i in range(len(dates)):
@@ -205,9 +205,14 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             dma30 = dma30_values[i]
             dma50 = dma50_values[i]
             dma200 = dma200_values[i]
-            
-            days = (date - last_date).days
-            last_date = date
+
+            days = 0
+            if last_date == -1:
+                last_date = date
+            else :
+                days = (date - last_date).days
+                last_date = date
+                
             if days > 0 :
                 interest_income = portfolio['cash'] * daily_interest_rate * days
                 portfolio['cash'] += interest_income
