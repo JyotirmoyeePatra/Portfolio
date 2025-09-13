@@ -188,6 +188,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         final_price = close_prices[-1]
         last_date = -1
         initial_price = -1
+        initial_date = dates[0]
 
         for i in range(len(dates)):
             date_str = dates[i]
@@ -196,6 +197,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             date = pd.Timestamp(date_str)
             if date < pd.Timestamp(start_date):
                 initial_price = close_prices[i]
+                initial_date = dates[i]
                 continue
 
             if initial_price == -1:
@@ -359,7 +361,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             portfolio['cash']
         ]
         bh_dates = [
-            pd.to_datetime(dates[0]),
+            pd.to_datetime(initial_date),
             pd.to_datetime(dates[-1])
         ]
         try:
@@ -375,7 +377,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         comp_col1, comp_col2, comp_col3 = st.columns(3)
         with comp_col1:
             # Optionally still show simple total return
-            st.metric("Buy & Hold Return", f"₹{buy_hold_profit[0]:.0f}")
+            st.metric("Buy & Hold Total Profit", f"₹{buy_hold_profit[0]:.0f}")
         with comp_col2:
             st.metric("Buy & Hold (Annualized)", f"{buy_hold_annualized[0]:.2f}%")
         with comp_col3:
@@ -384,7 +386,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             st.metric("Final Value", f"{final_capital[0]:.0f}")
 
         st.subheader("💰 Investment Details")
-        st.write(f"**Symbol:** {ticker}     ,&nbsp;&nbsp;&nbsp;&nbsp; **Invested Capital:** {initial_capital}  ,&nbsp;&nbsp;&nbsp;&nbsp;  **Opening Price** {initial_price}  ,&nbsp;&nbsp;&nbsp;&nbsp;  **Opening Date** {dates[0]}")
+        st.write(f"**Symbol:** {ticker}     ,&nbsp;&nbsp;&nbsp;&nbsp; **Invested Capital:** {initial_capital}  ,&nbsp;&nbsp;&nbsp;&nbsp;  **Opening Price** {initial_price}  ,&nbsp;&nbsp;&nbsp;&nbsp;  **Opening Date** {initial_date}")
         
         # Trade history
         if trade_history_with_cash:
