@@ -269,6 +269,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         if portfolio['units'] > 0:
             last_price = float(close_prices[-1])
             portfolio['cash'] += portfolio['units'] * last_price
+            portfolio['units'] = 0.0
             cash_rounded = int(portfolio['cash'])
             cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
             cash_pos = f"{cash_rounded} ( {cash_pct}% )"
