@@ -106,7 +106,7 @@ st.sidebar.subheader("Trading Parameters")
 total_capital = st.sidebar.number_input("Total Capital (₹)", min_value=10000, max_value=500000000, value=60000000, step=10000)
 sell_pct = st.sidebar.slider("Sell percentage (%)", min_value=0, max_value=20, value=0) / 100
 strong_buy_allocation = st.sidebar.slider("Strong Buy allocation (%)", min_value=1, max_value=100, value=4) / 100
-moderate_buy_allocation = st.sidebar.slider("Moderate Buy allocation (%)", min_value=1, max_value=10, value=1) / 100
+moderate_buy_allocation = st.sidebar.slider("Moderate Buy allocation (%)", min_value=1, max_value=100, value=1) / 100
 profit_threshold = st.sidebar.slider("Profit threshold for selling (%)", min_value=1, max_value=20, value=1)
 interest_rate_pct = 8.25
 daily_interest_rate = interest_rate_pct / 100 / 365
