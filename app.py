@@ -193,8 +193,8 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             date_str = dates[i]
             
             #Skip past dates.
-            date = pd.Timestamp(date_str).date()
-            if date.timestamp() < start_date:
+            date = pd.Timestamp(date_str)
+            if date < start_date:
                 initial_price = close_prices[i]
                 continue
 
