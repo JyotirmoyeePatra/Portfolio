@@ -117,7 +117,9 @@ maintenance_fee = st.sidebar.number_input(
     step=.05,
     format="%.2f"
 )
+drop_threshold = 0.30  # 30% from peak
 initial_price = 0.0
+
 
 # Run analysis button
 if st.sidebar.button("🚀 Run Analysis", type="primary"):
@@ -189,9 +191,12 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         last_date = -1
         initial_price = -1
         initial_date = dates[0]
+        peak_price = -1
 
         for i in range(len(dates)):
             date_str = dates[i]
+            if peak_price < close_prices[i]:
+                peak_price = close_prices[i]
             
             #Skip past dates.
             date = pd.Timestamp(date_str)
@@ -225,7 +230,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 trade_history_with_cash.append((date, 'Interest', interest_rate, interest_income, days, cash_pos))
             
             # Strong Buy: 200DMA > 50DMA > Price
-            if dma200 > dma50 > price and portfolio['cash'] > 0:
+            if dma200 > dma50 > price and portfolio['cash'] > 0 and price <= peak_price * (1 - drop_threshold) :
                 allocation = initial_capital * strong_buy_allocation
                 if portfolio['cash'] < ( 1 + (maintenance_fee / 100) ) * allocation :
                     allocation = ( 1 - (maintenance_fee / 100) ) * portfolio['cash']
@@ -246,7 +251,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     trade_history_with_cash.append((date, 'Maintenance', 'Fees', maintenance_fee,  (buy_amt * maintenance_fee / 100), int(portfolio['cash']) ))
             
             # Moderate Buy: 50DMA > 30DMA > Price
-            elif dma50 > dma30 > price and portfolio['cash'] > 0:
+            elif dma50 > dma30 > price and portfolio['cash'] > 0  and price <= peak_price * (1 - drop_threshold) :
                 allocation = initial_capital * moderate_buy_allocation
                 if portfolio['cash'] < ( 1 + (maintenance_fee / 100) ) * allocation :
                     allocation = ( 1 - (maintenance_fee / 100) ) * portfolio['cash']
@@ -269,7 +274,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
             # Sell if conditions met
             elif (portfolio['units'] > 0 and 
                   portfolio['last_buy_price'] is not None and
-                  price > dma50 > dma200):
+                  price > dma50 > dma200) :
                 
                 pct_change = (price - portfolio['last_buy_price']) / portfolio['last_buy_price'] * 100
                 
