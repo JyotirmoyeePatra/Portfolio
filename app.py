@@ -117,7 +117,7 @@ maintenance_fee = st.sidebar.number_input(
     step=.05,
     format="%.2f"
 )
-drop_threshold = 0.30  # 30% from peak
+drop_threshold = st.sidebar.slider("Sell percentage (%)", min_value=5, max_value=50, value=30) / 100 
 initial_price = 0.0
 
 
