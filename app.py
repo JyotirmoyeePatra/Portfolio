@@ -367,7 +367,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 st.metric("CAGR (Annualized)", f"{xirr_value:.2f}%")
             
             with col3:
-                total_trades = len( trade_df[trade_df['Action'] == 'Buy'] ) + len (trade_df[trade_df['Action'] == 'Sell']) 
+                total_trades = len( trade_history_with_cash[trade_history_with_cash['Action'] == 'Buy'] ) + len (trade_history_with_cash[trade_history_with_cash['Action'] == 'Sell']) 
                 st.metric("Total Trades", total_trades)
             
             with col4:
