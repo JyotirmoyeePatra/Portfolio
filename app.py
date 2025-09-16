@@ -27,13 +27,12 @@ def perform_buy(date, portfolio, allocation, price, buy_type, maintenance_fee, i
         trade_history.append((date, 'Buy', buy_type, units, price, cash_pos))
         
         # Maintenance fee
-        fee = buy_amt * maintenance_fee / 100
+        fee = (buy_amt * maintenance_fee) / 100
         portfolio['cash'] -= fee
         cash_rounded = int(portfolio['cash'])
         cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash'])) if (price * portfolio['units'] + portfolio['cash']) != 0 else 0
         cash_pos = f"{cash_rounded} ( {cash_pct}% )"
-        
-        trade_history.append((date, 'Maintenance', 'Fees', maintenance_fee, fee, cash_pos))
+        trade_history.append((date, 'Maintenance', 'Fees', 1, fee, cash_pos))
         
     return portfolio, trade_history
 
