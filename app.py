@@ -114,7 +114,7 @@ daily_interest_rate = interest_rate_pct / 100 / 365
 maintenance_fee = st.sidebar.number_input(
     label="Annual Maintenance Fee",
     min_value=0.0,
-    value=0.65,
+    value=0.15,
     step=.05,
     format="%.2f"
 )
