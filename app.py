@@ -211,6 +211,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 if initial_price == -1:
                     initial_price = close_prices[0]
                 units = 1
+                price = initial_price
                 portfolio['units'] += units
                 buy_amt = units * price
                 portfolio['cash'] -= buy_amt
