@@ -277,65 +277,24 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 cash_pos = f"{cash_rounded} ( {cash_pct}% )"
                 trade_history_with_cash.append((date, 'Interest', interest_rate, interest_income, days, cash_pos))
             
-            # Strong Buy: 200DMA > 50DMA > Price
-            if dma200 > dma50 > price and portfolio['cash'] > 0 and price <= peak_price * (1 - drop_threshold) :
+            if dma200 > dma50 > price and portfolio['cash'] > 0 and price <= peak_price * (1 - drop_threshold):
                 allocation = initial_capital * strong_buy_allocation
-                if portfolio['cash'] < ( 1 + (maintenance_fee / 100) ) * allocation :
-                    allocation = ( 1 - (maintenance_fee / 100) ) * portfolio['cash']
-                
-                units = int(allocation / price[0])
-                if units >= 1:
-                    portfolio['units'] += units
-                    buy_amt = units * price
-                    portfolio['cash'] -= buy_amt
-                    portfolio['last_buy_price'] = price
-                    #['Date', 'Action', 'Type', 'Units', 'Price', 'Cash Position']
-                    cash_rounded = int(portfolio['cash'])
-                    cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
-                    cash_pos = f"{cash_rounded} ( {cash_pct}% )"
-                    trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
-                    #Maintenance fees
-                    portfolio['cash'] -= buy_amt * maintenance_fee / 100
-                    trade_history_with_cash.append((date, 'Maintenance', 'Fees', maintenance_fee,  (buy_amt * maintenance_fee / 100), int(portfolio['cash']) ))
-            
-            # Moderate Buy: 50DMA > 30DMA > Price
-            elif dma50 > dma30 > price and portfolio['cash'] > 0  and price <= peak_price * (1 - drop_threshold) :
+                if portfolio['cash'] < (1 + (maintenance_fee / 100)) * allocation:
+                    allocation = (1 - (maintenance_fee / 100)) * portfolio['cash']
+                portfolio, trade_history_with_cash = perform_buy(date, portfolio, allocation, price, 'Strong', maintenance_fee, initial_capital, trade_history_with_cash)
+
+            # Moderate Buy
+            elif dma50 > dma30 > price and portfolio['cash'] > 0 and price <= peak_price * (1 - drop_threshold):
                 allocation = initial_capital * moderate_buy_allocation
-                if portfolio['cash'] < ( 1 + (maintenance_fee / 100) ) * allocation :
-                    allocation = ( 1 - (maintenance_fee / 100) ) * portfolio['cash']
-                
-                units = int(allocation / price[0])
-                
-                if units >= 1:
-                    portfolio['units'] += units
-                    buy_amt = units * price
-                    portfolio['cash'] -= buy_amt
-                    portfolio['last_buy_price'] = price
-                    cash_rounded = int(portfolio['cash'])
-                    cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
-                    cash_pos = f"{cash_rounded} ( {cash_pct}% )"
-                    trade_history_with_cash.append((date, 'Buy', 'Moderate', units, price, cash_pos ))
-                    #0.65% for maintenance fees
-                    portfolio['cash'] -= buy_amt * maintenance_fee / 100
-                    trade_history_with_cash.append((date, 'Maintenance', 'Fees', maintenance_fee,  (buy_amt * maintenance_fee / 100), int(portfolio['cash']) ))
-            
-            # Sell if conditions met
-            elif (portfolio['units'] > 0 and 
-                  portfolio['last_buy_price'] is not None and
-                  price > dma50 > dma200) :
-                
+                if portfolio['cash'] < (1 + (maintenance_fee / 100)) * allocation:
+                    allocation = (1 - (maintenance_fee / 100)) * portfolio['cash']
+                portfolio, trade_history_with_cash = perform_buy(date, portfolio, allocation, price, 'Moderate', maintenance_fee, initial_capital, trade_history_with_cash)
+
+            # Sell
+            elif (portfolio['units'] > 0 and portfolio['last_buy_price'] is not None and price > dma50 > dma200):
                 pct_change = (price - portfolio['last_buy_price']) / portfolio['last_buy_price'] * 100
-                
                 if pct_change >= profit_threshold:
-                    units_to_sell = int(portfolio['units'] * sell_pct)
-                    if units_to_sell >= 1 :
-                        portfolio['units'] -= units_to_sell
-                        sell_amt = units_to_sell * price
-                        portfolio['cash'] += sell_amt
-                        cash_rounded = int(portfolio['cash'])
-                        cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
-                        cash_pos = f"{cash_rounded} ( {cash_pct}% )"
-                        trade_history_with_cash.append((date, 'Sell', 'Profit_Taking', units_to_sell, price, cash_pos ))
+                    portfolio, trade_history_with_cash = perform_sell(date, portfolio, sell_pct, price, trade_history_with_cash)
 
         
         # Close remaining positions
