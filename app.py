@@ -10,6 +10,49 @@ import plotly.express as px
 import traceback
 import sys
 
+# --- Utility Functions ---
+
+def perform_buy(date, portfolio, allocation, price, buy_type, maintenance_fee, initial_capital, trade_history):
+    units = int(allocation / price)
+    if units >= 1:
+        portfolio['units'] += units
+        buy_amt = units * price
+        portfolio['cash'] -= buy_amt
+        portfolio['last_buy_price'] = price
+        
+        cash_rounded = int(portfolio['cash'])
+        cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash'])) if (price * portfolio['units'] + portfolio['cash']) != 0 else 0
+        cash_pos = f"{cash_rounded} ( {cash_pct}% )"
+        
+        trade_history.append((date, 'Buy', buy_type, units, price, cash_pos))
+        
+        # Maintenance fee
+        fee = buy_amt * maintenance_fee / 100
+        portfolio['cash'] -= fee
+        cash_rounded = int(portfolio['cash'])
+        cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash'])) if (price * portfolio['units'] + portfolio['cash']) != 0 else 0
+        cash_pos = f"{cash_rounded} ( {cash_pct}% )"
+        
+        trade_history.append((date, 'Maintenance', 'Fees', maintenance_fee, fee, cash_pos))
+        
+    return portfolio, trade_history
+
+def perform_sell(date, portfolio, sell_pct, price, trade_history, sell_type='Profit_Taking'):
+    units_to_sell = int(portfolio['units'] * sell_pct)
+    if units_to_sell >= 1:
+        portfolio['units'] -= units_to_sell
+        sell_amt = units_to_sell * price
+        portfolio['cash'] += sell_amt
+        
+        cash_rounded = int(portfolio['cash'])
+        cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash'])) if (price * portfolio['units'] + portfolio['cash']) != 0 else 0
+        cash_pos = f"{cash_rounded} ( {cash_pct}% )"
+        
+        trade_history.append((date, 'Sell', sell_type, units_to_sell, price, cash_pos))
+        
+    return portfolio, trade_history
+
+
 
 # Set page config
 st.set_page_config(page_title="Learn python in 1 hour.", layout="wide")
@@ -210,19 +253,8 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 initial_date = dates[i]
                 if initial_price == -1:
                     initial_price = close_prices[0]
-                units = 1
-                price = initial_price
-                portfolio['units'] += units
-                buy_amt = units * price
-                portfolio['cash'] -= buy_amt
-                portfolio['last_buy_price'] = price
-                #['Date', 'Action', 'Type', 'Units', 'Price', 'Cash Position']
-                cash_rounded = int(portfolio['cash'])
-                cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
-                cash_pos = f"{cash_rounded} ( {cash_pct}% )"
-                trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
-                portfolio['cash'] -= buy_amt * maintenance_fee / 100
-                trade_history_with_cash.append((date, 'Maintenance', 'Fees', maintenance_fee,  (buy_amt * maintenance_fee / 100), int(portfolio['cash']) ))                    
+                portfolio, trade_history_with_cash = perform_buy(date, portfolio, initial_price, initial_price, 
+                                                                 'Muhurut', maintenance_fee, initial_capital, trade_history_with_cash)
             
             price = close_prices[i]
             dma30 = dma30_values[i]
