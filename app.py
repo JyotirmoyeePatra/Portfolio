@@ -275,7 +275,6 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 cash_rounded = int(portfolio['cash'])
                 cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
                 cash_pos = f"{cash_rounded} ( {cash_pct}% )"
-                trade_history_with_cash.append((pd.Timestamp(dates[-1]), 'Sell',  'Final_Exit', portfolio['units'], last_price, cash_pos ))
                 trade_history_with_cash.append((date, 'Interest', interest_rate, days, (portfolio['cash'] * daily_interest_rate) , cash_pos))
             
             if dma200 > dma50 > price and portfolio['cash'] > 0 and price <= peak_price * (1 - drop_threshold):
