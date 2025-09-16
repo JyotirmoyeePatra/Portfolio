@@ -367,7 +367,8 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 st.metric("CAGR (Annualized)", f"{xirr_value:.2f}%")
             
             with col3:
-                st.metric("Total Trades", len(trade_history_with_cash))
+                total_trades = len( trade_df[trade_df['Action'] == 'Buy'] ) + len (trade_df[trade_df['Action'] == 'Sell']) 
+                st.metric("Total Trades", total_trades)
             
             with col4:
                 st.metric("Final Value", f"₹{portfolio['cash'][0]:.0f}")
