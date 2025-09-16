@@ -212,16 +212,16 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                     initial_price = close_prices[0]
                 units = 1
                 portfolio['units'] += units
-                    buy_amt = units * price
-                    portfolio['cash'] -= buy_amt
-                    portfolio['last_buy_price'] = price
-                    #['Date', 'Action', 'Type', 'Units', 'Price', 'Cash Position']
-                    cash_rounded = int(portfolio['cash'])
-                    cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
-                    cash_pos = f"{cash_rounded} ( {cash_pct}% )"
-                    trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
-                    portfolio['cash'] -= buy_amt * maintenance_fee / 100
-                    trade_history_with_cash.append((date, 'Maintenance', 'Fees', maintenance_fee,  (buy_amt * maintenance_fee / 100), int(portfolio['cash']) ))                    
+                buy_amt = units * price
+                portfolio['cash'] -= buy_amt
+                portfolio['last_buy_price'] = price
+                #['Date', 'Action', 'Type', 'Units', 'Price', 'Cash Position']
+                cash_rounded = int(portfolio['cash'])
+                cash_pct = int(100 * portfolio['cash'] / (price * portfolio['units'] + portfolio['cash']) )
+                cash_pos = f"{cash_rounded} ( {cash_pct}% )"
+                trade_history_with_cash.append((date, 'Buy', 'Strong', units, price,  cash_pos ))
+                portfolio['cash'] -= buy_amt * maintenance_fee / 100
+                trade_history_with_cash.append((date, 'Maintenance', 'Fees', maintenance_fee,  (buy_amt * maintenance_fee / 100), int(portfolio['cash']) ))                    
             
             price = close_prices[i]
             dma30 = dma30_values[i]
