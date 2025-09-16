@@ -324,6 +324,7 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
         status_text.text("Calculating returns...")
         cash_flows = []
         cash_dates = []
+        total_trades = 0
         
         for h in trade_history_with_cash:
             date, action, type, units, price = h[:5]
@@ -331,10 +332,12 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 cash_flow = -units * price
                 cash_flows.append(cash_flow)
                 cash_dates.append(date)
+                total_trades++
             elif action == 'Sell':
                 cash_flow = units * price
                 cash_flows.append(cash_flow)
                 cash_dates.append(date)
+                total_trades++
         
         # Calculate XIRR
         total_days = (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days
@@ -367,7 +370,6 @@ if st.sidebar.button("🚀 Run Analysis", type="primary"):
                 st.metric("CAGR (Annualized)", f"{xirr_value:.2f}%")
             
             with col3:
-                total_trades = len( trade_history_with_cash[trade_history_with_cash['Action'] == 'Buy'] ) + len (trade_history_with_cash[trade_history_with_cash['Action'] == 'Sell']) 
                 st.metric("Total Trades", total_trades)
             
             with col4:
