@@ -95,7 +95,7 @@ st.sidebar.subheader("Date Range")
 min_date = datetime.now() - timedelta(days=365*20)  # 20 years ago
 max_date = datetime.now()  # Today
 
-default_start = datetime(2024, 1, 1)
+default_start = datetime(2025, 1, 1)
 default_end = datetime.now()
 
 start_date_input = st.sidebar.date_input("Start Date", value=default_start, min_value=min_date, max_value=max_date)
@@ -106,7 +106,7 @@ st.sidebar.subheader("Trading Parameters")
 total_capital = st.sidebar.number_input("Total Capital (₹)", min_value=10000, max_value=500000000, value=60000000, step=10000)
 profit_threshold = st.sidebar.slider("Profit threshold for selling (%)", min_value=1, max_value=20, value=1)
 sell_pct = st.sidebar.slider("Sell percentage (%)", min_value=0, max_value=20, value=0) / 100
-drop_threshold = st.sidebar.slider("Peak Drop (%) Buy", min_value=5, max_value=50, value=30) / 100 
+drop_threshold = st.sidebar.slider("Peak Drop (%) Buy", min_value=5, max_value=50, value=15) / 100 
 strong_buy_allocation = st.sidebar.slider("Strong Buy allocation (%)", min_value=1, max_value=100, value=4) / 100
 moderate_buy_allocation = st.sidebar.slider("Moderate Buy allocation (%)", min_value=1, max_value=100, value=1) / 100
 interest_rate_pct = 8.25
