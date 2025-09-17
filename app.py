@@ -123,7 +123,9 @@ ticker_options = {
     "Waaree Energies Limited": {"symbol": "WAAREEENER.NS", "percent": 4.23},
     "Zen Technologies Limited": {"symbol": "ZENTEC.NS", "percent": 2.43},
     "Premier Explosives": {"symbol": "PREMEXPLN.NS", "percent": 1},
-    "Solar Industries": {"symbol": "SOLARINDS.NS", "percent": 1}
+    "Solar Industries": {"symbol": "SOLARINDS.NS", "percent": 1},
+    "Nifty Midcap 100": {"symbol": "NIFTY_MIDCAP_100.NS", "percent": 1}
+    
 }
 
 # Allow custom ticker input
