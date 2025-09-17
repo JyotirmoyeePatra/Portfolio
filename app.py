@@ -116,7 +116,8 @@ ticker_options = {
     "TVS Motor Company Limited": {"symbol": "TVSMOTOR.NS", "percent": 0.54},
     "V2 Retail Limited": {"symbol": "V2RETAIL.NS", "percent": 2.08},
     "Waaree Energies Limited": {"symbol": "WAAREEENER.NS", "percent": 4.23},
-    "Zen Technologies Limited": {"symbol": "ZENTEC.NS", "percent": 2.43}
+    "Zen Technologies Limited": {"symbol": "ZENTEC.NS", "percent": 2.43},
+    "Premier Explosives": {"symbol": ""PREMEXPLN.NS", "percent": 1}
 }
 
 # Allow custom ticker input
