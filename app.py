@@ -11,8 +11,13 @@ import traceback
 import sys
 
 # --- Utility Functions ---
-
+cooloff_period = datetime(1970, 1, 1, 0, 0)
 def perform_buy(date, portfolio, allocation, price, buy_type, maintenance_fee, initial_capital, trade_history):
+    
+    if date < cooloff_period:
+        return portfolio, trade_history
+
+    cooloff_period =  date + timedelta(days=5)
     units = int(allocation / price)
     if units >= 1:
         portfolio['units'] += units
