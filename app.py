@@ -13,12 +13,6 @@ import sys
 # --- Utility Functions ---
 cooloff_period = datetime(1970, 1, 1, 0, 0)
 def perform_buy(date, portfolio, allocation, price, buy_type, maintenance_fee, initial_capital, trade_history):
-
-    global cooloff_period
-    if date < cooloff_period:
-        return portfolio, trade_history
-
-    cooloff_period =  date + timedelta(days=5)
     units = int(allocation / price)
     if units >= 1:
         portfolio['units'] += units
@@ -43,6 +37,11 @@ def perform_buy(date, portfolio, allocation, price, buy_type, maintenance_fee, i
     return portfolio, trade_history
 
 def perform_sell(date, portfolio, sell_pct, price, trade_history, sell_type='Profit_Taking'):
+    global cooloff_period
+    if date < cooloff_period:
+        return portfolio, trade_history
+    cooloff_period =  date + timedelta(days=5) #Don't allow sale till next 5 days.
+    
     units_to_sell = int(portfolio['units'] * sell_pct)
     if units_to_sell >= 1:
         portfolio['units'] -= units_to_sell
