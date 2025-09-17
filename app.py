@@ -117,7 +117,7 @@ ticker_options = {
     "V2 Retail Limited": {"symbol": "V2RETAIL.NS", "percent": 2.08},
     "Waaree Energies Limited": {"symbol": "WAAREEENER.NS", "percent": 4.23},
     "Zen Technologies Limited": {"symbol": "ZENTEC.NS", "percent": 2.43},
-    "Premier Explosives": {"symbol": ""PREMEXPLN.NS", "percent": 1}
+    "Premier Explosives": {"symbol": "PREMEXPLN.NS", "percent": 1}
 }
 
 # Allow custom ticker input
