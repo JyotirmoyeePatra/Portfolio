@@ -13,7 +13,8 @@ import sys
 # --- Utility Functions ---
 cooloff_period = datetime(1970, 1, 1, 0, 0)
 def perform_buy(date, portfolio, allocation, price, buy_type, maintenance_fee, initial_capital, trade_history):
-    
+
+    global cooloff_period
     if date < cooloff_period:
         return portfolio, trade_history
 
