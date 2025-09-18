@@ -122,7 +122,8 @@ ticker_options = {
     "Zen Technologies Limited": {"symbol": "ZENTEC.NS", "percent": 2.43},
     "Premier Explosives": {"symbol": "PREMEXPLN.NS", "percent": 1},
     "Solar Industries": {"symbol": "SOLARINDS.NS", "percent": 1},
-    "Nifty Midcap 100": {"symbol": "NIFTY_MIDCAP_100.NS", "percent": 1}
+    "Nifty Midcap 100": {"symbol": "NIFTY_MIDCAP_100.NS", "percent": 1},
+    "Tata Midcap 150 mom 50": {"symbol": "0P0001PTTZ.BO", "percent": 1},
     
 }
 
