@@ -90,7 +90,6 @@ ticker_options = {
     "Deepak Fertilisers": {"symbol": "DEEPAKFERT.NS", "percent": 2},
     "Dixon Technologies (India) Limited": {"symbol": "DIXON.NS", "percent": 2.32},
     "Eicher Motors": {"symbol": "EICHERMOT.NS", "percent": 2},
-    "GE Vernova T&D India Limited": {"symbol": "GEVERNOVA.NS", "percent": 3.12},
     "Godrej Industries": {"symbol": "GODREJIND.NS", "percent": .1},
     "Gravita": {"symbol": "GRAVITA.NS", "percent": .1},
     "Gujarat Fluorochemicals Limited": {"symbol": "GUJFLUORO.NS", "percent": 2.19},
