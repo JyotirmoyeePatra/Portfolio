@@ -111,7 +111,6 @@ ticker_options = {
     "PB Fintech Limited": {"symbol": "PBFINTECH.NS", "percent": 1.96},
     "Premier Energies Limited": {"symbol": "PREMIER.NS", "percent": 2.78},
     "Prestige Estates Projects Limited": {"symbol": "PRESTIGE.NS", "percent": 3.16},
-    "PTC Industries Limited": {"symbol": "PTCINDIA.NS", "percent": 3.21},
     "Religare Enterprises Limited": {"symbol": "RELIGARE.NS", "percent": 2.10},
     "Samvardhana Motherson International Limited": {"symbol": "MOTHERSON.NS", "percent": 3.23},
     "Siemens Energy India Limited": {"symbol": "ENRIN.NS", "percent": 3.71},
