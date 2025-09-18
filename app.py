@@ -171,6 +171,89 @@ maintenance_fee = st.sidebar.number_input(
 )
 initial_price = 0.0
 
+# 📊 TradeToday - Today's Trades Summary
+st.sidebar.subheader("Today's Trades")
+
+if st.sidebar.button("📊 TradeToday"):
+    today_trades = []
+
+    # Loop through all predefined tickers
+    for fund_name, fund_info in ticker_options.items():
+        ticker_symbol = fund_info["symbol"]
+        initial_capital = total_capital * fund_info.get("percent", 100)/100
+
+        # Fetch last 6 months of data
+        df = yf.download(ticker_symbol, period="6mo", interval="1d", progress=False)
+        if df.empty:
+            continue
+
+        # Calculate moving averages
+        df['30DMA'] = df['Close'].rolling(window=30).mean()
+        df['50DMA'] = df['Close'].rolling(window=50).mean()
+        df['200DMA'] = df['Close'].rolling(window=200).mean()
+        df = df.dropna()
+        if df.empty:
+            continue
+
+        # Initialize portfolio
+        portfolio = {'cash': initial_capital, 'units': 0, 'last_buy_price': None, 'history': []}
+        trade_history = []
+
+        # Apply strategy logic (same as your Run Analysis loop)
+        peak_price = -1
+        muhurth = 1
+        dates = df.index.to_numpy()
+        close_prices = df['Close'].values
+        dma30_values = df['30DMA'].values
+        dma50_values = df['50DMA'].values
+        dma200_values = df['200DMA'].values
+        for i in range(len(dates)):
+            date = pd.Timestamp(dates[i])
+            price = close_prices[i]
+            dma30 = dma30_values[i]
+            dma50 = dma50_values[i]
+            dma200 = dma200_values[i]
+
+            if peak_price < price:
+                peak_price = price
+
+            if muhurth:
+                muhurth = 0
+                portfolio, trade_history = perform_buy(date, portfolio, price, price, 'Muhurut', maintenance_fee, initial_capital, trade_history)
+
+            # Buy / Sell logic
+            if dma200 > dma50 > price and portfolio['cash'] > 0 and price <= peak_price * (1 - drop_threshold):
+                allocation = initial_capital * strong_buy_allocation
+                portfolio, trade_history = perform_buy(date, portfolio, allocation, price, 'Strong', maintenance_fee, initial_capital, trade_history)
+            elif dma50 > dma30 > price and portfolio['cash'] > 0 and price <= peak_price * (1 - drop_threshold):
+                allocation = initial_capital * moderate_buy_allocation
+                portfolio, trade_history = perform_buy(date, portfolio, allocation, price, 'Moderate', maintenance_fee, initial_capital, trade_history)
+            elif portfolio['units'] > 0 and portfolio['last_buy_price'] is not None and price > dma50 > dma200:
+                pct_change = (price - portfolio['last_buy_price']) / portfolio['last_buy_price'] * 100
+                if pct_change >= profit_threshold:
+                    portfolio, trade_history = perform_sell(date, portfolio, sell_pct, price, trade_history)
+
+        # Filter only today's trades
+        if trade_history:
+            latest_date = max([t[0] for t in trade_history])
+            todays = [t for t in trade_history if t[0] == latest_date]
+            for t in todays:
+                today_trades.append({
+                    "Stock": ticker_symbol.replace(".NS", ""),
+                    "Action": t[1],
+                    "Type": t[2],
+                    "Units": t[3],
+                    "Price": round(t[4], 2),
+                    "Cash Position": t[5]
+                })
+
+    # Display summary table
+    if today_trades:
+        summary_df = pd.DataFrame(today_trades)
+        st.subheader("📋 Today's Trades Summary")
+        st.dataframe(summary_df, use_container_width=True)
+    else:
+        st.info("✅ No trades triggered today.")
 
 # Run analysis button
 if st.sidebar.button("🚀 Run Analysis", type="primary"):
