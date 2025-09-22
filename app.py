@@ -239,11 +239,11 @@ if st.sidebar.button("📊 TradeToday"):
                     portfolio, trade_history = perform_sell(date, portfolio, sell_pct, price, trade_history)
 
         # Filter only today's trades
-        st.info(f"✅ Trade history - {trade_history}")
         if trade_history:
             latest_date = max([t[0] for t in trade_history])
-            #todays = [t for t in trade_history if t[0] > (end_date_input - timedelta(days=7) ) ]
-            for t in latest_date:
+            st.info(f"✅ Trade history - {latest_date}")
+            todays = [t for t in trade_history if t[0] > (end_date_input - timedelta(days=7) ) ]
+            for t in todays:
                 today_trades.append({
                     "Stock": ticker_symbol.replace(".NS", ""),
                     "Action": t[1],
