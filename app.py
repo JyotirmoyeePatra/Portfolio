@@ -253,7 +253,7 @@ if st.sidebar.button("📊 TradeToday"):
                     "Action": t[1],
                     "Type": t[2],
                     "Units": t[3],
-                    "Price": round(t[4], 2),
+                    "Price": t[4],
                     "Cash Position": t[5]
                 })
 
