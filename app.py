@@ -179,6 +179,7 @@ if st.sidebar.button("📊 TradeToday"):
 
     # Loop through all predefined tickers
     for fund_name, fund_info in ticker_options.items():
+        st.info("✅ Checking for ticker : {fund_name}")
         ticker_symbol = fund_info["symbol"]
         initial_capital = total_capital * fund_info.get("percent", 100)/100
 
