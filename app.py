@@ -183,11 +183,12 @@ if st.sidebar.button("📊 TradeToday"):
         initial_capital = total_capital * fund_info.get("percent", 100)/100
 
         # Fetch yahoo finance data
-        start_date_moving = (start_date_input - timedelta(days=180)).strftime("%Y-%m-%d")
-        end_date = end_date_input.strftime("%Y-%m-%d")
+        end_date = (end_date_input + timedelta(days=1)).strftime("%Y-%m-%d")
+        start_date = start_date_input
+        start_date_moving = (start_date - timedelta(days=365)).strftime("%Y-%m-%d") # For calculation of 180 days back..
         df = yf.download(ticker_symbol, start=start_date_moving, end=end_date, progress=False)
         if df.empty:
-            st.info(f"✅ Yahoo Finance download failed. : {fund_name} df is empty.")
+            st.info(f"✅ Yahoo Finance download failed. : {ticker_symbol} df is empty.")
             continue
 
         # Calculate moving averages
