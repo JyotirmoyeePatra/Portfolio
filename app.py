@@ -179,12 +179,12 @@ if st.sidebar.button("📊 TradeToday"):
 
     # Loop through all predefined tickers
     for fund_name, fund_info in ticker_options.items():
-        st.info("✅ Checking for ticker : {fund_name}")
+        st.info(f"✅ Checking for ticker : {fund_name}")
         ticker_symbol = fund_info["symbol"]
         initial_capital = total_capital * fund_info.get("percent", 100)/100
 
-        # Fetch last 6 months of data
-        df = yf.download(ticker_symbol, period="6mo", interval="1d", progress=False)
+        # Fetch yahoo finance data
+        df = yf.download(ticker_symbol, start=start_date_moving, end=end_date, progress=False)
         if df.empty:
             continue
 
