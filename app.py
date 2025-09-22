@@ -184,7 +184,7 @@ if st.sidebar.button("📊 TradeToday"):
         initial_capital = total_capital * fund_info.get("percent", 100)/100
 
         # Fetch yahoo finance data
-        start_date_moving = (start_date - timedelta(days=365)).strftime("%Y-%m-%d")
+        start_date_moving = (start_date_input - timedelta(days=365)).strftime("%Y-%m-%d")
         df = yf.download(ticker_symbol, start=start_date_moving, end=end_date, progress=False)
         if df.empty:
             continue
