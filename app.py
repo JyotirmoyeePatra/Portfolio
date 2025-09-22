@@ -187,6 +187,7 @@ if st.sidebar.button("📊 TradeToday"):
         end_date = end_date_input.strftime("%Y-%m-%d")
         df = yf.download(ticker_symbol, start=start_date_moving, end=end_date, progress=False)
         if df.empty:
+            st.info(f"✅ Yahoo Finance download failed. : {fund_name} df is empty.")
             continue
 
         # Calculate moving averages
