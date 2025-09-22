@@ -241,8 +241,6 @@ if st.sidebar.button("📊 TradeToday"):
         # Filter only today's trades
         if trade_history:
             latest_date = max(t[0] for t in trade_history)
-            st.info(f"✅ Trade history - {latest_date}")
-        
             cutoff_date = pd.Timestamp(end_date_input) - pd.Timedelta(days=7)
         
             recent_trades = [t for t in trade_history if t[0] > cutoff_date]
@@ -250,6 +248,7 @@ if st.sidebar.button("📊 TradeToday"):
             for t in recent_trades:
                 today_trades.append({
                     "Stock": ticker_symbol.replace(".NS", ""),
+                    "Date": t[0],
                     "Action": t[1],
                     "Type": t[2],
                     "Units": t[3],
