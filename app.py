@@ -242,7 +242,7 @@ if st.sidebar.button("📊 TradeToday"):
         st.info(f"✅ Trade history - {trade_history}")
         if trade_history:
             latest_date = max([t[0] for t in trade_history])
-            todays = [t for t in trade_history if t[0] > (end_date - timedelta(days=7) ) ]
+            todays = [t for t in trade_history if t[0] > (end_date_input - timedelta(days=7) ) ]
             for t in todays:
                 today_trades.append({
                     "Stock": ticker_symbol.replace(".NS", ""),
