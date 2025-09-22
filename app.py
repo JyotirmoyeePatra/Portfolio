@@ -238,6 +238,7 @@ if st.sidebar.button("📊 TradeToday"):
 
         # Filter only today's trades
         if trade_history:
+            st.info("✅ Trade history - {trade_history}")
             latest_date = max([t[0] for t in trade_history])
             todays = [t for t in trade_history if t[0] > (end_date - timedelta(days=7) ) ]
             for t in todays:
