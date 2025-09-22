@@ -243,7 +243,7 @@ if st.sidebar.button("📊 TradeToday"):
             latest_date = max(t[0] for t in trade_history)
             cutoff_date = pd.Timestamp(end_date_input) - pd.Timedelta(days=7)
         
-            recent_trades = [t for t in trade_history if t[0] > cutoff_date]
+            recent_trades = [t for t in trade_history if t[0] > cutoff_date] and t[1] == "Buy"
         
             for t in recent_trades:
                 today_trades.append({
