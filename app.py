@@ -179,7 +179,6 @@ if st.sidebar.button("📊 TradeToday"):
 
     # Loop through all predefined tickers
     for fund_name, fund_info in ticker_options.items():
-        st.info(f"✅ Checking for ticker : {fund_name}")
         ticker_symbol = fund_info["symbol"]
         initial_capital = total_capital * fund_info.get("percent", 100)/100
 
@@ -198,6 +197,7 @@ if st.sidebar.button("📊 TradeToday"):
         if df.empty:
             continue
 
+        st.info(f"✅ Checking for ticker : {fund_name} - {initial_capital}")
         # Initialize portfolio
         portfolio = {'cash': initial_capital, 'units': 0, 'last_buy_price': None, 'history': []}
         trade_history = []
