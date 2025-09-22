@@ -199,7 +199,7 @@ if st.sidebar.button("📊 TradeToday"):
         if df.empty:
             continue
 
-        st.info(f"✅ Checking for ticker : {fund_name} - {initial_capital}")
+        st.info(f"✅ Checking for ticker : {ticker_symbol} - {initial_capital}")
         # Initialize portfolio
         portfolio = {'cash': initial_capital, 'units': 0, 'last_buy_price': None, 'history': []}
         trade_history = []
@@ -239,7 +239,7 @@ if st.sidebar.button("📊 TradeToday"):
                     portfolio, trade_history = perform_sell(date, portfolio, sell_pct, price, trade_history)
 
         # Filter only today's trades
-        st.info("✅ Trade history - {trade_history}")
+        st.info(f"✅ Trade history - {trade_history}")
         if trade_history:
             latest_date = max([t[0] for t in trade_history])
             todays = [t for t in trade_history if t[0] > (end_date - timedelta(days=7) ) ]
