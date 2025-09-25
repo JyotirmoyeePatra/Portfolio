@@ -126,7 +126,7 @@ ticker_options = {
   "Neuland Labs": {"symbol": "NEULANDLAB.NS", "percent": 0.01},
   "Nifty BeES": {"symbol": "^NSEI", "percent": 100},
   "Nifty Midcap 100": {"symbol": "NIFTY_MIDCAP_100.NS", "percent": 1},
-  "Nifty50 Value 20": {"symbol": "NV20.NS", "percent": 1}
+  "Nifty50 Value 20": {"symbol": "NV20.NS", "percent": 1},
   "NTPC": {"symbol": "NTPC.NS", "percent": 1.20},
   "Onesource Specialty Pharma Limited": {"symbol": "ONESOURCE.NS", "percent": 2.99},
   "ONGC": {"symbol": "ONGC.NS", "percent": 1.25},
