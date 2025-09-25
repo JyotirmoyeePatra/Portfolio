@@ -157,7 +157,20 @@ ticker_options = {
   "V2 Retail Limited": {"symbol": "V2RETAIL.NS", "percent": 2.08},
   "Waaree Energies Limited": {"symbol": "WAAREEENER.NS", "percent": 4.23},
   "Wipro": {"symbol": "WIPRO.NS", "percent": 1.50},
-  "Zen Technologies Limited": {"symbol": "ZENTEC.NS", "percent": 2.43}
+  "Zen Technologies Limited": {"symbol": "ZENTEC.NS", "percent": 2.43},
+  "Coal India Limited": {"symbol": "COALINDIA.NS", "percent": 1},
+  "Kotak Mahindra Bank Limited": {"symbol": "KOTAKBANK.NS", "percent": 1},
+  "Dr. Reddy's Laboratories Limited": {"symbol": "DRREDDY.NS", "percent": 1},
+  "Zydus Lifesciences Limited": {"symbol": "ZYDUSLIFE.NS", "percent": 1},
+  "Indian Energy Exchange Limited": {"symbol": "IEX.NS", "percent": 1},
+  "Balkrishna Industries Limited": {"symbol": "BALKRISIND.NS", "percent": 1},
+  "EID Parry India Limited": {"symbol": "EIDPARRY.NS", "percent": 1},
+  "Central Depository Services (India)": {"symbol": "CDSL.NS", "percent": 1},
+  "ICRA Limited": {"symbol": "ICRA.NS", "percent": 1},
+  "Maharashtra Scooters Limited": {"symbol": "MAHSCOOTER.NS", "percent": 1},
+  "IPCA Laboratories Limited": {"symbol": "IPCALAB.NS", "percent": 1},
+  "Nesco Limited": {"symbol": "NESCO.NS", "percent": 1},
+  "Swaraj Engines Limited": {"symbol": "SWARAJENG.NS", "percent": 1}
 }
 
 # Allow custom ticker input
