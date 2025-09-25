@@ -178,7 +178,7 @@ st.sidebar.subheader("Date Range")
 min_date = datetime.now() - timedelta(days=365*20)  # 20 years ago
 max_date = datetime.now()  # Today
 
-default_start = datetime(2025, 1, 1)
+default_start = datetime.now() - timedelta(days=90)
 default_end = datetime.now()
 
 start_date_input = st.sidebar.date_input("Start Date", value=default_start, min_value=min_date, max_value=max_date)
