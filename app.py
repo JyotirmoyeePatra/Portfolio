@@ -127,6 +127,7 @@ ticker_options = {
   "Nifty BeES": {"symbol": "^NSEI", "percent": 100},
   "Nifty Midcap 100": {"symbol": "NIFTY_MIDCAP_100.NS", "percent": 1},
   "Nifty50 Value 20": {"symbol": "NV20.NS", "percent": 1},
+  "Nifty Pharma": {"symbol": "^CNXPHARMA", "percent": 1},  
   "NTPC": {"symbol": "NTPC.NS", "percent": 1.20},
   "Onesource Specialty Pharma Limited": {"symbol": "ONESOURCE.NS", "percent": 2.99},
   "ONGC": {"symbol": "ONGC.NS", "percent": 1.25},
@@ -244,7 +245,6 @@ if st.sidebar.button("📊 TradeToday"):
         if df.empty:
             continue
 
-        st.info(f"✅ Checking for ticker : {ticker_symbol} - {initial_capital}")
         # Initialize portfolio
         portfolio = {'cash': initial_capital, 'units': 0, 'last_buy_price': None, 'history': []}
         trade_history = []
@@ -257,6 +257,9 @@ if st.sidebar.button("📊 TradeToday"):
         dma30_values = df['30DMA'].values
         dma50_values = df['50DMA'].values
         dma200_values = df['200DMA'].values
+        
+        st.info(f"✅ Checking for ticker : {ticker_symbol}, Capital:{initial_capital}, Last Trade: {close_prices[-1]},  Dma 50: {dma50_values[-1]}, Dma 200: {dma200_values[-1]}")
+        
         for i in range(len(dates)):
             date = pd.Timestamp(dates[i])
             price = close_prices[i]
