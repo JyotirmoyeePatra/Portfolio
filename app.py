@@ -171,7 +171,20 @@ ticker_options = {
   "Maharashtra Scooters Limited": {"symbol": "MAHSCOOTER.NS", "percent": 1},
   "IPCA Laboratories Limited": {"symbol": "IPCALAB.NS", "percent": 1},
   "Nesco Limited": {"symbol": "NESCO.NS", "percent": 1},
-  "Swaraj Engines Limited": {"symbol": "SWARAJENG.NS", "percent": 1}
+  "Swaraj Engines Limited": {"symbol": "SWARAJENG.NS", "percent": 1},
+   "Solar Industries": {"symbol": "SLIN.BO", "percent": 1},
+   "Mazagon Dock Shipbuilders": {"symbol": "MAZD.BO", "percent": 1},
+   "Cochin Shipyard Limited": {"symbol": "COCHIN.BO", "percent": 1},
+   "Astra Microwave": {"symbol": "ASTER.BO", "percent": 1},
+   "BEML": {"symbol": "BEML.BO", "percent": 1},
+   "Garden Reach": {"symbol": "GRSE.BO", "percent": 1},
+   "MTAR": {"symbol": "MTARTECH.BO", "percent": 1},
+   "DYNAMTEC": {"symbol": "DYNAMTEC.BO", "percent": 1},
+    "PARAS": {"symbol": "PARAS.BO", "percent": 1},
+    "MIDHANI": {"symbol": "MIDHANI.NS", "percent": 1},
+    "CYIENT": {"symbol": "CYIENT.BO", "percent": 1},
+    "DCX": {"symbol": "DCX.BO", "percent": 1},
+    "UNIMECH": {"symbol": "UNIMECH.BO", "percent": 1}
 }
 
 # Allow custom ticker input
